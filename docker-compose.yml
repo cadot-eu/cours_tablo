@@ -1,0 +1,17 @@
+services:
+  local:
+    image: shinsenter/symfony:latest
+    container_name: tablo
+    ports:
+      - 8080:80
+      - 4443:443
+    restart: always
+    volumes:
+      - ./project-tablo:/app
+    environment:
+      - APP_PATH=/app
+    command: >
+      sh -c "mkdir -p /home/www-data &&
+             echo 'alias sc=\"cd /app && php bin/console\"' >> /root/.bashrc &&
+             tail -f /dev/null"
+    network_mode: bridge

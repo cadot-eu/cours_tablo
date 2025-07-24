@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="fr">
+	<head>
+		<meta charset="UTF-8">
+		<title>Guide Symfony Prêt Travaux - Tablo</title>
+		<link rel="stylesheet" href="styles.css">
+	</head>
+	<body>
+		<h1>🏗️ Guide de Construction d'une Application de Gestion de Prêt Travaux avec Symfony 7.3</h1>
+
+		<div id="sommaire">
+			<h2>📚 Sommaire</h2>
+			<ol>
+				<li><a href="#part0">Partie 0 - Préparation de l'environnement Docker</a></li>
+				<li><a href="#part1">Partie 1 - Configuration initiale et authentification</a></li>
+				<li><a href="#part2">Partie 2 - Implémentation du tableau interactif</a></li>
+				<li><a href="#part3">Partie 3 - Améliorations et tests</a></li>
+			</ol>
+		</div>
+
+		<div id="part0" class="part">
+			<h2>🐳 Partie 0: Création de l'application Symfony</h2>
+			<p>Installation des outils de debs par
+				<code>cd ~ && git clone https://github.com/cadot-eu/debs.git && ./installdebs</code>
+			</p>
+
+			<div class="two-columns">
+				<div class="commands">
+					<h3>🚀 Commandes essentielles</h3>
+
+					<h4>1. Le docker créera un symfony automatiquement</h4>
+					<pre><code>dc up -d && dlogs tablo</code></pre>
+
+					<p>il faut attendre d'avoir Command line: 'apache2 -E /dev/stderr -D FOREGROUND' pour que symfony soit installé et le docker prêt, cela peut prendre 2-3 mn quand tu le vois CTRL+C pour quitter dlogs</p>
+					<h4>2. On voit notre docker</h4>
+					<pre><code>docker ps</code></pre>
+
+					<h4>3. Accès conteneur</h4>
+					<pre><code>dbash tablo</code></pre>
+
+					<h4>4. Vérification de l'installation</h4>
+					<pre><code>sc list</code></pre>
+
+					<h4>5. Configuration .env</h4>
+					<p>on ouvre vscode sur notre projet
+						<pre><code>cd project-tablo && code .</code></pre>
+					</p>
+					<p>On ajoute dans .env.local (il faut le créer)</p>
+					<pre><code>APP_ENV=dev
+DATABASE_URL="sqlite:///%kernel.project_dir%/var/data.db"
+PRET_TOTAL=34000</code></pre>
+
+					<h4>6. On crée le contrôleur en allant dans le docker (tu peux utiliser le terminal de vscode et faire
+						<code>dbash tablo</code>)</h4>
+					<pre><code>sc make:controller HomeController</code></pre>
+					<p>On voit que l'on a une erreur (background rouge) qui dit que la commande make n'existe pas et qu'il faut ajouter la dépendance composer par
+						<code>composer require symfony/maker-bundle --dev</code>
+					</p>
+					<p>On relance la commande maintenant que la librairie est installée et on réponds non à la question pour créer un fichier test (on a pas installé les outils pour)</p>
+					<pre><code>sc make:controller HomeController</code></pre>
+					<p>On peut maintenant voir le contrôleur dans
+						<code>src/Controller/HomeController.php</code>
+					</p>
+					<p>On peut aussi voir que le contrôleur a une route
+						<code>#[Route('/home', name: 'app_home')]</code>
+					</p>
+					<p>On peut maintenant aller pour le voir sur
+						<code>http://localhost:8080/home</code>
+					</p>
+				</p>
+				<h4>Questions</h4>
+				<ol>
+					<li>
+						<strong>Composer installe des librairies JavaScript :</strong>
+						Oui / Non ?</li>
+					<li>
+						<strong>Pour ajouter une dépendance avec Composer, on utilise :</strong>
+						<code>composer ______</code>
+					</li>
+					<li>
+						<strong>Pour ajouter une dépendance de développement uniquement :</strong>
+						<code>composer require symfony/maker-bundle ______</code>
+					</li>
+					<li>
+						<strong>Configuration d'environnement :</strong>
+						Si on a dans
+						<code>.env</code>
+						TOTO=1 et dans
+						<code>.env.local</code>
+						TOTO=2, notre application aura quelle valeur pour TOTO ?</li>
+					<li>
+						<strong>Comment créer un contrôleur ?</strong>
+						<code>sc ______</code>
+					</li>
+					<li>
+						<strong>Question pour les pros :</strong>
+						Comment créer une entité ?
+						<code>sc ______</code>
+					</li>
+					<li>
+						<strong>Pour voir toutes les routes de l'application :</strong>
+						<code>sc ______</code>
+					</li>
+					<li>
+						<strong>Exercice pratique :</strong>
+						Essayez de créer une route à la main dans le contrôleur qui affiche une réponse HTML "Hello World" (sans utiliser de template Twig, juste du HTML direct)</li>
+				</ol>
+
+			</div>
+
+			<div class="explanations">
+				<h3>� Explications</h3>
+
+				<h4>1. le docker utilise une image avec symfony dedans</h4>
+				<ul>
+					<li>Installation complète avec tous les bundles essentiels</li>
+					<li>Twig, Doctrine, Security déjà inclus</li>
+					<li>bin/console automatiquement créé</li>
+					<li>Structure complète prête à l'emploi</li>
+				</ul>
+
+				<h4>2. Pour les dockers qui tournent par
+					<code>docker ps</code>
+				</h4>
+				<ul>
+					<li>CONTAINER ID: pour tuer le docker (docker kill numéro)ou avoir des infos (docker inspect numéro)</li>
+					<li>Image: cadoteu/symfony5-6-runsite (docker avec tout dedans pour faire tourner Symfony)</li>
+					<li>STATUS: pour voir si le docker tourne (Up)</li>
+					<li>PORTS: pour voir les ports (0.0.0.0:8080->80 et 0.0.0.0:4443->443) et donc accéder à l'application par http://localhost:8080 ou https://localhost:4443</li>
+					<li>NAME: tablo (c'est le nom du conteneur)</li>
+				</ul>
+
+				<h4>4. sc est le raccourcis de php bin/console</h4>
+				<p>il permet d'exécuter des commandes Symfony sans avoir à taper le chemin complet.</p>
+				<ul>
+					<li>
+						<code>sc list</code>
+						- Liste des commandes disponibles</li>
+					<li>
+						<code>sc make:controller MainController</code>
+						- Crée un contrôleur de base</li>
+					<li>
+						<code>sc make:entity</code>
+						- Crée une entité Doctrine</li>
+					<li>
+						<code>sc doctrine:shema:update -f</code>
+						- Met à jour la base de données</li>
+					<li>
+						<code>sc doctrine:fixtures:load</code>
+						- Charge les fixtures de test</li>
+					<li>
+						<code>sc cache:clear</code>
+						- Vide le cache de l'application</li>
+					<li>
+						<code>sc debug:router</code>
+						- Affiche les routes définies</li>
+				</ul>
+
+				<h4>5. Fichier d'environnement</h4>
+				<p>Le fichier
+					<code>.env</code>
+					contient les variables d'environnement essentielles pour la configuration de l'application Symfony.</p>
+				<p>Le fichier
+					<code>.env.local</code>
+					peut être utilisé pour remplacer les valeurs de
+					<code>.env</code>
+					en local.</p>
+
+				<h4>6. Composer</h4>
+				<p>C'est un gestionnaire de dépendances pour PHP. Il permet d'installer et de gérer facilement les bibliothèques et les packages nécessaires à votre projet Symfony.</p>
+				<p>regarde avec vscode le fichier composer.json</p>
+				<p>Il contient les dépendances du projet, les versions requises et d'autres informations importantes.</p>
+				<p>le --dev permet d'installer une dépendance uniquement pour le développement, comme le maker qui ne sert pas en production.</p>
+				<p>Symfony nous aide beaucoup mais il faut prendre le temps de lire les messages. ;-)</p>
+				<h4>6. Explication du Controller</h4>
+				<p>On a plusieurs parties</p>
+				<ul>
+					<li>Le namespace:
+						<code>App\Controller</code>
+						qui définit l'espace de noms de la classe, ça permet d'organiser le code et d'éviter les conflits de noms.</li>
+					<li>Les use:
+						<code>use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;...</code>
+						qui importent les classes nécessaires.</li>
+					<li>La classe:
+						<code>class HomeController extends AbstractController</code>
+						qui définit le contrôleur et
+						<code>extends AbstractController</code>
+						pour hériter des fonctionnalités de ce parent (on profite de ses méthodes et propriétés).</li>
+					<li>La route:
+						<code>#[Route('/home', name: 'app_home')]</code>
+						qui définit l'URL et le nom de la route. On peut aussi l'appeler dans notre ode par app_home</li>
+					<li>La méthode:
+						<code>public function index(): JsonResponse</code>
+						qui est la méthode qui sera appelée lorsque l'utilisateur accède à cette route et qui retourne une Response JSON (qui est un objet de symfony pas juste un json)</li>
+					<li>Le code de la méthode qui ne fait que retourner un json
+					</li>
+				</ul>
+
+
+			</div>
+		</div>
+
+		<div id="part1" class="part">
+			<h2>🚀 Partie 1: Authentification et sécurité</h2>
+			<div class="two-columns">
+				<div class="commands">
+					<h3>🔐 Commandes d'authentification</h3>
+					<h4>1. Créer l'entité User</h4>
+					<pre><code>sc make:user</code></pre>
+					<h4>2. Créer le système d'auth</h4>
+					<pre><code>sc make:auth</code></pre>
+					<h4>3. Migration base de données</h4>
+					<pre><code>sc make:migration
+sc doctrine:migrations:migrate</code></pre>
+					<h4>4. Créer un utilisateur test</h4>
+					<pre><code>sc make:fixture UserFixture</code></pre>
+					<h4>5. Charger les fixtures</h4>
+					<pre><code>sc doctrine:fixtures:load</code></pre>
+					<h4>6. Test connexion</h4>
+					<pre><code>http://localhost:8080/login</code></pre>
+				</div>
+				<div class="explanations">
+					<h3>🔑 Configuration sécurité</h3>
+					<h4>Fichiers générés</h4>
+					<ul>
+						<li>
+							<code>src/Entity/User.php</code>- Entité utilisateur</li>
+						<li>
+							<code>config/packages/security.yaml</code>- Config sécurité</li>
+						<li>
+							<code>src/Security/</code>- Authenticator</li>
+						<li>
+							<code>templates/security/</code>- Formulaires</li>
+					</ul>
+					<h4>Variables .env</h4>
+					<ul>
+						<li>
+							<code>DATABASE_URL</code>- SQLite par défaut</li>
+						<li>
+							<code>APP_SECRET</code>- Clé de chiffrement</li>
+					</ul>
+					<h4>Commandes debug</h4>
+					<ul>
+						<li>
+							<code>sc debug:firewall</code>- Voir les firewalls</li>
+						<li>
+							<code>sc debug:router</code>- Routes sécurisées</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<div id="part2" class="part">
+			<h2>🎨 Partie 2: Interface et tableaux interactifs</h2>
+			<div class="two-columns">
+				<div class="commands">
+					<h3>🖼️ Commandes interface</h3>
+					<h4>1. Installer AssetMapper</h4>
+					<pre><code>sc composer require symfony/asset-mapper</code></pre>
+					<h4>2. Installer Stimulus</h4>
+					<pre><code>sc composer require symfony/stimulus-bundle</code></pre>
+					<h4>3. Créer contrôleur dashboard</h4>
+					<pre><code>sc make:controller DashboardController</code></pre>
+					<h4>4. Créer entité LoanItem</h4>
+					<pre><code>sc make:entity LoanItem</code></pre>
+					<h4>5. Migration</h4>
+					<pre><code>sc make:migration
+sc doctrine:migrations:migrate</code></pre>
+					<h4>6. Installer SortableJS</h4>
+					<pre><code>npm install sortablejs</code></pre>
+					<h4>7. Test dashboard</h4>
+					<pre><code>http://localhost:8080/dashboard</code></pre>
+				</div>
+				<div class="explanations">
+					<h3>⚛️ JavaScript moderne</h3>
+					<h4>Technologies utilisées</h4>
+					<ul>
+						<li>
+							<strong>AssetMapper</strong>- Gestion des assets</li>
+						<li>
+							<strong>Stimulus</strong>- Framework JS minimal</li>
+						<li>
+							<strong>SortableJS</strong>- Drag & drop</li>
+					</ul>
+					<h4>Structure assets</h4>
+					<ul>
+						<li>
+							<code>assets/app.js</code>- Point d'entrée</li>
+						<li>
+							<code>assets/controllers/</code>- Contrôleurs Stimulus</li>
+						<li>
+							<code>assets/styles/</code>- CSS</li>
+					</ul>
+					<h4>Entité LoanItem</h4>
+					<ul>
+						<li>Nom, description, montant</li>
+						<li>Position pour tri</li>
+						<li>Relations avec User</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<div id="part3" class="part">
+			<h2>🧪 Partie 3: Tests et finalisation</h2>
+			<div class="two-columns">
+				<div class="commands">
+					<h3>✅ Commandes de test</h3>
+					<h4>1. Installer PHPUnit</h4>
+					<pre><code>sc composer require --dev phpunit/phpunit</code></pre>
+					<h4>2. Installer Fixtures</h4>
+					<pre><code>sc composer require --dev doctrine/doctrine-fixtures-bundle</code></pre>
+					<h4>3. Créer test Controller</h4>
+					<pre><code>sc make:test</code></pre>
+					<h4>4. Lancer les tests</h4>
+					<pre><code>sc phpunit</code></pre>
+					<h4>5. Cache clear</h4>
+					<pre><code>sc cache:clear</code></pre>
+					<h4>6. Vérification finale</h4>
+					<pre><code>sc debug:container --env=prod</code></pre>
+				</div>
+				<div class="explanations">
+					<h3>� Bonnes pratiques</h3>
+					<h4>Tests à créer</h4>
+					<ul>
+						<li>Tests unitaires des entités</li>
+						<li>Tests d'intégration des contrôleurs</li>
+						<li>Tests de sécurité</li>
+					</ul>
+					<h4>Optimisations</h4>
+					<ul>
+						<li>Cache en production</li>
+						<li>Assets compilés</li>
+						<li>Variables d'environnement</li>
+					</ul>
+					<h4>Debug utiles</h4>
+					<ul>
+						<li>
+							<code>sc debug:router</code>- Routes</li>
+						<li>
+							<code>sc debug:container</code>- Services</li>
+						<li>
+							<code>sc debug:config</code>- Configuration</li>
+					</ul>
+				</div>
+			</div>
+			<h2>🏁 Application terminée !</h2>
+			<p>Votre application Symfony de gestion de prêt travaux est maintenant opérationnelle avec :</p>
+			<ul>
+				<li>✅ Authentification sécurisée</li>
+				<li>✅ Interface interactive avec drag & drop</li>
+				<li>✅ Base de données SQLite</li>
+				<li>✅ Tests automatisés</li>
+				<li>✅ Profiler de développement</li>
+			</ul>
+		</div>
+	</body>
+</html></body></html></body></html>
