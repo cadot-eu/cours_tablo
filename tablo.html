@@ -3,11 +3,21 @@
 	<head>
 		<meta charset="UTF-8">
 		<title>Guide Symfony Prêt Travaux - Tablo</title>
-		<link rel="stylesheet" href="styles.css">
+		<link
+		rel="stylesheet" href="styles.css">
+		<!-- Prism.js pour la coloration syntaxique -->
+		<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" rel="stylesheet"/>
+	 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+		<!-- Dépendances dans l'ordre correct -->
+		 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup-templating.min.js"></script>
+		 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+		 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-php.min.js"></script>
+		 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-yaml.min.js"></script>
+		 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
 	</head>
 	<body>
 		<h1>🏗️ Guide de Construction d'une Application de Gestion de Prêt Travaux avec Symfony 7.3</h1>
-
+		<div class="danger">Attention : Si tu veux vraiment retenir le code tape le! pas de copier-coller!!! J'ai pris le temps de metre le minimum de code à taper</div>
 		<div id="sommaire">
 			<h2>📚 Sommaire</h2>
 			<ol>
@@ -24,335 +34,755 @@
 				<code>cd ~ && git clone https://github.com/cadot-eu/debs.git && ./installdebs</code>
 			</p>
 
-			<div class="two-columns">
-				<div class="commands">
-					<h3>🚀 Commandes essentielles</h3>
+			<h3>🚀 Commandes essentielles</h3>
 
-					<h4>1. Le docker créera un symfony automatiquement</h4>
-					<pre><code>dc up -d && dlogs tablo</code></pre>
+			<h4>1. Le docker créera un symfony automatiquement</h4>
+			<pre><code>dc up -d && dlogs tablo</code></pre>
+			<p>il faut attendre d'avoir Command line: 'apache2 -E /dev/stderr -D FOREGROUND' pour que symfony soit installé et le docker prêt, cela peut prendre 2-3 mn quand tu le vois CTRL+C pour quitter dlogs</p>
 
-					<p>il faut attendre d'avoir Command line: 'apache2 -E /dev/stderr -D FOREGROUND' pour que symfony soit installé et le docker prêt, cela peut prendre 2-3 mn quand tu le vois CTRL+C pour quitter dlogs</p>
-					<h4>2. On voit notre docker</h4>
-					<pre><code>docker ps</code></pre>
-
-					<h4>3. Accès conteneur</h4>
-					<pre><code>dbash tablo</code></pre>
-
-					<h4>4. Vérification de l'installation</h4>
-					<pre><code>sc list</code></pre>
-
-					<h4>5. Configuration .env</h4>
-					<p>on ouvre vscode sur notre projet
-						<pre><code>cd project-tablo && code .</code></pre>
-					</p>
-					<p>On ajoute dans .env.local (il faut le créer)</p>
-					<pre><code>APP_ENV=dev
-DATABASE_URL="sqlite:///%kernel.project_dir%/var/data.db"
-PRET_TOTAL=34000</code></pre>
-
-					<h4>6. On crée le contrôleur en allant dans le docker (tu peux utiliser le terminal de vscode et faire
-						<code>dbash tablo</code>)</h4>
-					<pre><code>sc make:controller HomeController</code></pre>
-					<p>On voit que l'on a une erreur (background rouge) qui dit que la commande make n'existe pas et qu'il faut ajouter la dépendance composer par
-						<code>composer require symfony/maker-bundle --dev</code>
-					</p>
-					<p>On relance la commande maintenant que la librairie est installée et on réponds non à la question pour créer un fichier test (on a pas installé les outils pour)</p>
-					<pre><code>sc make:controller HomeController</code></pre>
-					<p>On peut maintenant voir le contrôleur dans
-						<code>src/Controller/HomeController.php</code>
-					</p>
-					<p>On peut aussi voir que le contrôleur a une route
-						<code>#[Route('/home', name: 'app_home')]</code>
-					</p>
-					<p>On peut maintenant aller pour le voir sur
-						<code>http://localhost:8080/home</code>
-					</p>
-				</p>
-				<h4>Questions</h4>
-				<ol>
+			<div class="explanation">
+				<h5>🐳 Démarrage automatique du conteneur Docker</h5>
+				<p>Le docker utilise une image avec Symfony pré-installé :</p>
+				<ul>
 					<li>
-						<strong>Composer installe des librairies JavaScript :</strong>
-						Oui / Non ?</li>
+						<strong>dc up -d :</strong>
+						Démarre le conteneur en arrière-plan</li>
 					<li>
-						<strong>Pour ajouter une dépendance avec Composer, on utilise :</strong>
-						<code>composer ______</code>
-					</li>
+						<strong>dlogs tablo :</strong>
+						Affiche les logs en temps réel</li>
 					<li>
-						<strong>Pour ajouter une dépendance de développement uniquement :</strong>
-						<code>composer require symfony/maker-bundle ______</code>
-					</li>
+						<strong>Installation complète :</strong>
+						Tous les bundles essentiels (Twig, Doctrine, Security)</li>
 					<li>
-						<strong>Configuration d'environnement :</strong>
-						Si on a dans
-						<code>.env</code>
-						TOTO=1 et dans
-						<code>.env.local</code>
-						TOTO=2, notre application aura quelle valeur pour TOTO ?</li>
-					<li>
-						<strong>Comment créer un contrôleur ?</strong>
-						<code>sc ______</code>
-					</li>
-					<li>
-						<strong>Question pour les pros :</strong>
-						Comment créer une entité ?
-						<code>sc ______</code>
-					</li>
-					<li>
-						<strong>Pour voir toutes les routes de l'application :</strong>
-						<code>sc ______</code>
-					</li>
-					<li>
-						<strong>Exercice pratique :</strong>
-						Essayez de créer une route à la main dans le contrôleur qui affiche une réponse HTML "Hello World" (sans utiliser de template Twig, juste du HTML direct)</li>
-				</ol>
-
+						<strong>Structure prête :</strong>
+						bin/console automatiquement créé</li>
+				</ul>
+				<p>
+					<strong>Attendre le message Apache :</strong>
+					Indique que Symfony est entièrement opérationnel</p>
 			</div>
 
-			<div class="explanations">
-				<h3>� Explications</h3>
+			<h4>2. On voit notre docker</h4>
+			<pre><code>docker ps</code></pre>
 
-				<h4>1. le docker utilise une image avec symfony dedans</h4>
-				<ul>
-					<li>Installation complète avec tous les bundles essentiels</li>
-					<li>Twig, Doctrine, Security déjà inclus</li>
-					<li>bin/console automatiquement créé</li>
-					<li>Structure complète prête à l'emploi</li>
-				</ul>
-
-				<h4>2. Pour les dockers qui tournent par
+			<div class="explanation">
+				<h5>🔍 Inspection des conteneurs actifs</h5>
+				<p>La commande
 					<code>docker ps</code>
-				</h4>
-				<ul>
-					<li>CONTAINER ID: pour tuer le docker (docker kill numéro)ou avoir des infos (docker inspect numéro)</li>
-					<li>Image: cadoteu/symfony5-6-runsite (docker avec tout dedans pour faire tourner Symfony)</li>
-					<li>STATUS: pour voir si le docker tourne (Up)</li>
-					<li>PORTS: pour voir les ports (0.0.0.0:8080->80 et 0.0.0.0:4443->443) et donc accéder à l'application par http://localhost:8080 ou https://localhost:4443</li>
-					<li>NAME: tablo (c'est le nom du conteneur)</li>
-				</ul>
-
-				<h4>4. sc est le raccourcis de php bin/console</h4>
-				<p>il permet d'exécuter des commandes Symfony sans avoir à taper le chemin complet.</p>
+					affiche :</p>
 				<ul>
 					<li>
-						<code>sc list</code>
-						- Liste des commandes disponibles</li>
+						<strong>CONTAINER ID :</strong>
+						Pour tuer le docker (docker kill numéro) ou avoir des infos (docker inspect numéro)</li>
 					<li>
-						<code>sc make:controller MainController</code>
-						- Crée un contrôleur de base</li>
+						<strong>Image :</strong>
+						cadoteu/symfony5-6-runsite (docker avec tout dedans pour faire tourner Symfony)</li>
 					<li>
-						<code>sc make:entity</code>
-						- Crée une entité Doctrine</li>
+						<strong>STATUS :</strong>
+						Pour voir si le docker tourne (Up)</li>
 					<li>
-						<code>sc doctrine:shema:update -f</code>
-						- Met à jour la base de données</li>
+						<strong>PORTS :</strong>
+						0.0.0.0:8080->80 et 0.0.0.0:4443->443</li>
 					<li>
-						<code>sc doctrine:fixtures:load</code>
-						- Charge les fixtures de test</li>
-					<li>
-						<code>sc cache:clear</code>
-						- Vide le cache de l'application</li>
-					<li>
-						<code>sc debug:router</code>
-						- Affiche les routes définies</li>
+						<strong>NAME :</strong>
+						tablo (nom du conteneur)</li>
 				</ul>
-
-				<h4>5. Fichier d'environnement</h4>
-				<p>Le fichier
-					<code>.env</code>
-					contient les variables d'environnement essentielles pour la configuration de l'application Symfony.</p>
-				<p>Le fichier
-					<code>.env.local</code>
-					peut être utilisé pour remplacer les valeurs de
-					<code>.env</code>
-					en local.</p>
-
-				<h4>6. Composer</h4>
-				<p>C'est un gestionnaire de dépendances pour PHP. Il permet d'installer et de gérer facilement les bibliothèques et les packages nécessaires à votre projet Symfony.</p>
-				<p>regarde avec vscode le fichier composer.json</p>
-				<p>Il contient les dépendances du projet, les versions requises et d'autres informations importantes.</p>
-				<p>le --dev permet d'installer une dépendance uniquement pour le développement, comme le maker qui ne sert pas en production.</p>
-				<p>Symfony nous aide beaucoup mais il faut prendre le temps de lire les messages. ;-)</p>
-				<h4>6. Explication du Controller</h4>
-				<p>On a plusieurs parties</p>
-				<ul>
-					<li>Le namespace:
-						<code>App\Controller</code>
-						qui définit l'espace de noms de la classe, ça permet d'organiser le code et d'éviter les conflits de noms.</li>
-					<li>Les use:
-						<code>use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;...</code>
-						qui importent les classes nécessaires.</li>
-					<li>La classe:
-						<code>class HomeController extends AbstractController</code>
-						qui définit le contrôleur et
-						<code>extends AbstractController</code>
-						pour hériter des fonctionnalités de ce parent (on profite de ses méthodes et propriétés).</li>
-					<li>La route:
-						<code>#[Route('/home', name: 'app_home')]</code>
-						qui définit l'URL et le nom de la route. On peut aussi l'appeler dans notre ode par app_home</li>
-					<li>La méthode:
-						<code>public function index(): JsonResponse</code>
-						qui est la méthode qui sera appelée lorsque l'utilisateur accède à cette route et qui retourne une Response JSON (qui est un objet de symfony pas juste un json)</li>
-					<li>Le code de la méthode qui ne fait que retourner un json
-					</li>
-				</ul>
-
-
+				<p>
+					<strong>Accès web :</strong>
+					http://localhost:8080 ou https://localhost:4443</p>
 			</div>
+
+			<h4>3. Accès conteneur</h4>
+			<pre><code>dbash tablo</code></pre>
+
+			<div class="explanation">
+				<h5>🖥️ Shell interactif dans le conteneur</h5>
+				<p>dbash permet d'entrer dans le conteneur :</p>
+				<ul>
+					<li>
+						<strong>Shell bash :</strong>
+						Ligne de commande complète</li>
+					<li>
+						<strong>Environnement Symfony :</strong>
+						Tous les outils disponibles</li>
+					<li>
+						<strong>sc :</strong>
+						Raccourci pour php bin/console</li>
+					<li>
+						<strong>Composer :</strong>
+						Gestionnaire de dépendances PHP</li>
+				</ul>
+			</div>
+
+			<h4>4. Vérification de l'installation</h4>
+			<pre><code>sc list</code></pre>
+
+			<div class="explanation">
+				<h5>📝 Commandes Symfony disponibles</h5>
+				<p>sc est le raccourci de php bin/console :</p>
+				<ul>
+					<li>
+						<strong>sc list :</strong>
+						Liste des commandes disponibles</li>
+					<li>
+						<strong>sc make:controller :</strong>
+						Crée un contrôleur</li>
+					<li>
+						<strong>sc make:entity :</strong>
+						Crée une entité Doctrine</li>
+					<li>
+						<strong>sc doctrine:schema:update -f :</strong>
+						Met à jour la base</li>
+					<li>
+						<strong>sc doctrine:fixtures:load :</strong>
+						Charge les fixtures</li>
+					<li>
+						<strong>sc cache:clear :</strong>
+						Vide le cache</li>
+					<li>
+						<strong>sc debug:router :</strong>
+						Affiche les routes</li>
+				</ul>
+			</div>
+
+			<h4>5. Sortir du conteneur</h4>
+			<pre><code>exit</code></pre>
+
+			<div class="explanation">
+				<h5>🚪 Retour à l'environnement local</h5>
+				<p>La commande
+					<code>exit</code>
+					ferme la session dans le conteneur et retourne à votre terminal local.</p>
+			</div>
+
+			<h4>6. Configuration .env</h4>
+			<p>on ouvre vscode sur notre projet
+				<pre><code>cd project-tablo && code .</code></pre>
+			</p>
+			<p>On ajoute dans .env.local (il faut le créer)</p>
+			<pre><code>APP_ENV=dev
+			PRET_TOTAL=34000</code></pre>
+
+			<div class="explanation">
+				<h5>⚙️ Configuration d'environnement</h5>
+				<p>Fichiers d'environnement Symfony :</p>
+				<ul>
+					<li>
+						<strong>.env :</strong>
+						Variables par défaut (versionnées)</li>
+					<li>
+						<strong>.env.local :</strong>
+						Variables locales (non versionnées)</li>
+					<li>
+						<strong>Priorité :</strong>
+						.env.local remplace .env</li>
+					<li>
+						<strong>APP_ENV=dev :</strong>
+						Mode développement</li>
+					<li>
+						<strong>PRET_TOTAL :</strong>
+						Variable personnalisée pour notre app</li>
+				</ul>
+				<p>
+					<strong>Accès dans le code :</strong>
+					$_ENV['PRET_TOTAL'] ou via DotEnv</p>
+			</div>
+
+			<h4>7. On crée le contrôleur en allant dans le docker (tu peux utiliser le terminal de vscode et faire
+				<code>dbash tablo</code>)</h4>
+			<pre><code>sc make:controller TestController</code></pre>
+			<p>On voit que l'on a une erreur (background rouge) qui dit que la commande make n'existe pas et qu'il faut ajouter la dépendance composer par
+				<code>composer require symfony/maker-bundle --dev</code>
+			</p>
+			<p>On relance la commande maintenant que la librairie est installée et on réponds non à la question pour créer un fichier test (on a pas installé les outils pour)</p>
+			<pre><code>sc make:controller TestController</code></pre>
+			<p>On peut maintenant voir le contrôleur dans
+				<code>src/Controller/TestController.php</code>
+			</p>
+			<p>On peut aussi voir que le contrôleur a une route
+				<code>#[Route('/test', name: 'app_test')]</code>
+			</p>
+			<p>On peut maintenant aller pour le voir sur
+				<code>http://localhost:8080/test</code>
+			</p>
+			<blockquote>on peut aussi avoir de l'aide sur les commande en mettant --help par exemple
+				<code>sc make:controller --help</code>
+			</blockquote>
+
+			<div class="explanation">
+				<h5>🎛️ Premier contrôleur et gestion d'erreurs</h5>
+				<p>
+					<strong>Erreur "make command not found" :</strong>
+				</p>
+				<ul>
+					<li>
+						<strong>Problème :</strong>
+						MakerBundle non installé</li>
+					<li>
+						<strong>Solution :</strong>
+						composer require symfony/maker-bundle --dev</li>
+					<li>
+						<strong>--dev :</strong>
+						Dépendance de développement uniquement</li>
+				</ul>
+				<p>
+					<strong>Structure du contrôleur créé :</strong>
+				</p>
+				<ul>
+					<li>
+						<strong>Namespace :</strong>
+						App\Controller (organisation du code)</li>
+					<li>
+						<strong>Use statements :</strong>
+						Imports des classes nécessaires</li>
+					<li>
+						<strong>Héritage :</strong>
+						extends AbstractController (méthodes héritées)</li>
+					<li>
+						<strong>Route :</strong>
+						#[Route('/test', name: 'app_test')]</li>
+					<li>
+						<strong>Méthode :</strong>
+						public function index(): JsonResponse</li>
+				</ul>
+				<p>
+					<strong>Test :</strong>
+					http://localhost:8080/test affiche la réponse JSON</p>
+			</div>
+
+			<h4>Questions</h4>
+			<ol>
+				<li>
+					<strong>Composer installe des librairies JavaScript :</strong>
+					Oui / Non ?</li>
+				<li>
+					<strong>Pour ajouter une dépendance avec Composer, on utilise :</strong>
+					<code>composer ______</code>
+				</li>
+				<li>
+					<strong>Pour ajouter une dépendance de développement uniquement :</strong>
+					<code>composer require symfony/maker-bundle ______</code>
+				</li>
+				<li>
+					<strong>Configuration d'environnement :</strong>
+					Si on a dans
+					<code>.env</code>
+					TOTO=1 et dans
+					<code>.env.local</code>
+					TOTO=2, notre application aura quelle valeur pour TOTO ?</li>
+				<li>
+					<strong>Comment créer un contrôleur ?</strong>
+					<code>sc ______</code>
+				</li>
+				<li>
+					<strong>Question pour les pros :</strong>
+					Comment créer une entité ?
+					<code>sc ______</code>
+				</li>
+				<li>
+					<strong>Pour voir toutes les routes de l'application :</strong>
+					<code>sc ______</code>
+				</li>
+				<li>
+					<strong>Exercice pratique :</strong>
+					Essayez de créer une route à la main dans le contrôleur qui affiche une réponse HTML "Hello World" (sans utiliser de template Twig, juste du HTML direct)</li>
+			</ol>
+
+			<div class="explanation">
+				<h5>🎓 Concepts clés et bonnes pratiques</h5>
+				<p>
+					<strong>Composer (gestionnaire de dépendances PHP) :</strong>
+				</p>
+				<ul>
+					<li>
+						<strong>composer.json :</strong>
+						Définit les dépendances du projet</li>
+					<li>
+						<strong>vendor/ :</strong>
+						Dossier des librairies installées</li>
+					<li>
+						<strong>--dev :</strong>
+						Outils de développement (tests, debug, maker)</li>
+					<li>
+						<strong>Autoload :</strong>
+						Chargement automatique des classes</li>
+				</ul>
+				<p>
+					<strong>Messages d'erreur Symfony :</strong>
+				</p>
+				<ul>
+					<li>
+						<strong>Explicites :</strong>
+						Indiquent souvent la solution</li>
+					<li>
+						<strong>Background rouge :</strong>
+						Erreurs critiques dans le terminal</li>
+					<li>
+						<strong>Suggestions :</strong>
+						Commandes à exécuter pour corriger</li>
+				</ul>
+				<p>
+					<strong>Aide contextuelle :</strong>
+					--help sur toutes les commandes pour plus d'infos</p>
+			</div>
+
 		</div>
 
 		<div id="part1" class="part">
 			<h2>🚀 Partie 1: Authentification et sécurité</h2>
-			<div class="two-columns">
-				<div class="commands">
-					<h3>🔐 Commandes d'authentification</h3>
-					<h4>1. Créer l'entité User</h4>
-					<pre><code>sc make:user</code></pre>
-					<h4>2. Créer le système d'auth</h4>
-					<pre><code>sc make:auth</code></pre>
-					<h4>3. Migration base de données</h4>
-					<pre><code>sc make:migration
-sc doctrine:migrations:migrate</code></pre>
-					<h4>4. Créer un utilisateur test</h4>
-					<pre><code>sc make:fixture UserFixture</code></pre>
-					<h4>5. Charger les fixtures</h4>
-					<pre><code>sc doctrine:fixtures:load</code></pre>
-					<h4>6. Test connexion</h4>
-					<pre><code>http://localhost:8080/login</code></pre>
-				</div>
-				<div class="explanations">
-					<h3>🔑 Configuration sécurité</h3>
-					<h4>Fichiers générés</h4>
-					<ul>
-						<li>
-							<code>src/Entity/User.php</code>- Entité utilisateur</li>
-						<li>
-							<code>config/packages/security.yaml</code>- Config sécurité</li>
-						<li>
-							<code>src/Security/</code>- Authenticator</li>
-						<li>
-							<code>templates/security/</code>- Formulaires</li>
-					</ul>
-					<h4>Variables .env</h4>
-					<ul>
-						<li>
-							<code>DATABASE_URL</code>- SQLite par défaut</li>
-						<li>
-							<code>APP_SECRET</code>- Clé de chiffrement</li>
-					</ul>
-					<h4>Commandes debug</h4>
-					<ul>
-						<li>
-							<code>sc debug:firewall</code>- Voir les firewalls</li>
-						<li>
-							<code>sc debug:router</code>- Routes sécurisées</li>
-					</ul>
-				</div>
-			</div>
-		</div>
 
-		<div id="part2" class="part">
-			<h2>🎨 Partie 2: Interface et tableaux interactifs</h2>
-			<div class="two-columns">
-				<div class="commands">
-					<h3>🖼️ Commandes interface</h3>
-					<h4>1. Installer AssetMapper</h4>
-					<pre><code>sc composer require symfony/asset-mapper</code></pre>
-					<h4>2. Installer Stimulus</h4>
-					<pre><code>sc composer require symfony/stimulus-bundle</code></pre>
-					<h4>3. Créer contrôleur dashboard</h4>
-					<pre><code>sc make:controller DashboardController</code></pre>
-					<h4>4. Créer entité LoanItem</h4>
-					<pre><code>sc make:entity LoanItem</code></pre>
-					<h4>5. Migration</h4>
-					<pre><code>sc make:migration
-sc doctrine:migrations:migrate</code></pre>
-					<h4>6. Installer SortableJS</h4>
-					<pre><code>npm install sortablejs</code></pre>
-					<h4>7. Test dashboard</h4>
-					<pre><code>http://localhost:8080/dashboard</code></pre>
-				</div>
-				<div class="explanations">
-					<h3>⚛️ JavaScript moderne</h3>
-					<h4>Technologies utilisées</h4>
-					<ul>
-						<li>
-							<strong>AssetMapper</strong>- Gestion des assets</li>
-						<li>
-							<strong>Stimulus</strong>- Framework JS minimal</li>
-						<li>
-							<strong>SortableJS</strong>- Drag & drop</li>
-					</ul>
-					<h4>Structure assets</h4>
-					<ul>
-						<li>
-							<code>assets/app.js</code>- Point d'entrée</li>
-						<li>
-							<code>assets/controllers/</code>- Contrôleurs Stimulus</li>
-						<li>
-							<code>assets/styles/</code>- CSS</li>
-					</ul>
-					<h4>Entité LoanItem</h4>
-					<ul>
-						<li>Nom, description, montant</li>
-						<li>Position pour tri</li>
-						<li>Relations avec User</li>
-					</ul>
-				</div>
-			</div>
-		</div>
+			<h3>🔐 Configuration de l'authentification</h3>
 
-		<div id="part3" class="part">
-			<h2>🧪 Partie 3: Tests et finalisation</h2>
-			<div class="two-columns">
-				<div class="commands">
-					<h3>✅ Commandes de test</h3>
-					<h4>1. Installer PHPUnit</h4>
-					<pre><code>sc composer require --dev phpunit/phpunit</code></pre>
-					<h4>2. Installer Fixtures</h4>
-					<pre><code>sc composer require --dev doctrine/doctrine-fixtures-bundle</code></pre>
-					<h4>3. Créer test Controller</h4>
-					<pre><code>sc make:test</code></pre>
-					<h4>4. Lancer les tests</h4>
-					<pre><code>sc phpunit</code></pre>
-					<h4>5. Cache clear</h4>
-					<pre><code>sc cache:clear</code></pre>
-					<h4>6. Vérification finale</h4>
-					<pre><code>sc debug:container --env=prod</code></pre>
-				</div>
-				<div class="explanations">
-					<h3>� Bonnes pratiques</h3>
-					<h4>Tests à créer</h4>
-					<ul>
-						<li>Tests unitaires des entités</li>
-						<li>Tests d'intégration des contrôleurs</li>
-						<li>Tests de sécurité</li>
-					</ul>
-					<h4>Optimisations</h4>
-					<ul>
-						<li>Cache en production</li>
-						<li>Assets compilés</li>
-						<li>Variables d'environnement</li>
-					</ul>
-					<h4>Debug utiles</h4>
-					<ul>
-						<li>
-							<code>sc debug:router</code>- Routes</li>
-						<li>
-							<code>sc debug:container</code>- Services</li>
-						<li>
-							<code>sc debug:config</code>- Configuration</li>
-					</ul>
-				</div>
+			<h4>1. Installer Twig</h4>
+			<pre><code>composer require twig</code></pre>
+			<p class="info">Twig est le moteur de templates de Symfony pour créer des pages HTML, il va nous permettre de créer des pages html qu'on a besoin pour un beau login, les pages du site...</p>
+
+			<div class="explanation">
+				<h5>🔑 Moteur de templates Twig</h5>
+				<p>Twig est le moteur de templates par défaut de Symfony :</p>
+				<ul>
+					<li>Syntaxe simple et sécurisée</li>
+					<li>Héritage de templates</li>
+					<li>Échappement automatique des données</li>
+					<li>Fonctions et filtres intégrés</li>
+				</ul>
 			</div>
-			<h2>🏁 Application terminée !</h2>
-			<p>Votre application Symfony de gestion de prêt travaux est maintenant opérationnelle avec :</p>
+
+			<h4>2. Installer Doctrine ORM</h4>
+			<pre><code class="language-bash">composer require symfony/orm-pack</code></pre>
+			<p class="info">ORM-Pack installe Doctrine ORM et tous les composants nécessaires pour la base de données</p>
+
+			<div class="explanation">
+				<h5>🗄️ Installation de Doctrine ORM</h5>
+				<p>L'ORM-Pack installe plusieurs composants essentiels :</p>
+				<ul>
+					<li>
+						<strong>Doctrine ORM :</strong>
+						Mapping objet-relationnel pour PHP</li>
+					<li>
+						<strong>Doctrine Bundle :</strong>
+						Intégration Symfony</li>
+					<li>
+						<strong>Doctrine Migrations :</strong>
+						Versioning de la base de données</li>
+					<li>
+						<strong>Doctrine Fixtures :</strong>
+						Données de test</li>
+				</ul>
+				<p>
+					<strong>Avantage :</strong>
+					Une seule commande installe tout l'écosystème base de données</p>
+			</div>
+
+			<h4>3. Configurer SQLite dans .env</h4>
+			<p>Modifier le fichier
+				<code>.env</code>
+				pour changer la configuration de base de données :</p>
+			<p># Commenter PostgreSQL (ligne par défaut)</p>
+			<pre><code class="language-bash"># DATABASE_URL="postgresql://app:!ChangeMe!@127.0.0.1:5432/app?serverVersion=16&charset=utf8"
+</code></pre>
+			<p># Activer SQLite (décommenter ou ajouter)</p>
+			<pre><code class="language-bash">DATABASE_URL="sqlite:///%kernel.project_dir%/var/data.db"</code></pre>
+			<div class="explanation">
+				<h5>🗄️ Configuration SQLite vs PostgreSQL</h5>
+				<p>Pourquoi choisir SQLite pour le développement :</p>
+				<ul>
+					<li>
+						<strong>Simplicité :</strong>
+						Pas de serveur à installer</li>
+					<li>
+						<strong>Fichier unique :</strong>
+						Base stockée dans var/data.db</li>
+					<li>
+						<strong>Portable :</strong>
+						Fonctionne sur tous les systèmes</li>
+					<li>
+						<strong>Rapide :</strong>
+						Idéal pour le développement et les tests</li>
+				</ul>
+				<p>
+					<strong>URL format :</strong>
+					sqlite:///chemin/vers/fichier.db</p>
+				<p>
+					<strong>%kernel.project_dir% :</strong>
+					Variable Symfony = racine du projet</p>
+			</div>
+
+			<h4>4. Créer la base de données</h4>
+			<pre><code class="language-bash">sc doctrine:database:create</code></pre>
+			<p class="info">ou plus court :
+				<code>sc d:d:c</code>
+			</p>
+			<p>Cette commande crée le fichier SQLite
+				<code>var/data.db</code>
+				s'il n'existe pas</p>
+
+			<div class="explanation">
+				<h5>🗄️ Création de la base SQLite</h5>
+				<p>La commande doctrine:database:create :</p>
+				<ul>
+					<li>
+						<strong>Lit DATABASE_URL :</strong>
+						Depuis .env ou .env.local</li>
+					<li>
+						<strong>Crée le fichier :</strong>
+						var/data.db pour SQLite</li>
+					<li>
+						<strong>Permissions :</strong>
+						Fichier accessible en lecture/écriture</li>
+					<li>
+						<strong>Vérification :</strong>
+						Erreur si la base existe déjà</li>
+				</ul>
+				<p>
+					<strong>Raccourci :</strong>
+					sc d:d:c pour aller plus vite</p>
+			</div>
+
+			<h4>5. Vérifier la configuration</h4>
+			<pre><code class="language-bash">sc doctrine:schema:create</code></pre>
+			<p class="info">ou plus court :
+				<code>sc d:s:c</code>
+			</p>
+			<p>Cette commande confirme que la connexion à la base fonctionne (même si aucune table n'est créée pour l'instant)</p>
+
+			<div class="explanation">
+				<h5>🗄️ Test de la configuration</h5>
+				<p>doctrine:schema:create vérifie :</p>
+				<ul>
+					<li>
+						<strong>Connexion :</strong>
+						DATABASE_URL valide</li>
+					<li>
+						<strong>Permissions :</strong>
+						Écriture possible sur le fichier</li>
+					<li>
+						<strong>Configuration :</strong>
+						Doctrine bien configuré</li>
+					<li>
+						<strong>Schéma :</strong>
+						Prêt à recevoir des entités</li>
+				</ul>
+				<p>
+					<strong>Message attendu :</strong>
+					"Database schema created successfully!" ou "Nothing to update"</p>
+			</div>
+
+			<h4>6. Créer l'entité User</h4>
+			<pre><code class="language-bash">sc make:user</code></pre>
+			<p class="warning">Erreur ;-), A toi de la réparer
+			</p>
+			<p class="info">Réponds aux questions : User comme nom, yes pour database, email comme propriété unique, yes pour encoder password</p>
+			<div class="explanation">
+				<h5>🔑 Création de l'entité User</h5>
+				<p>La commande make:user en détail :</p>
+				<ul>
+					<li>
+						<strong>Entité User :</strong>
+						Représente un utilisateur</li>
+					<li>
+						<strong>Propriétés :</strong>
+						Email, Password, Roles</li>
+					<li>
+						<strong>Repository :</strong>
+						Gestion des requêtes sur la table user</li>
+					<li>
+						<strong>Configuration :</strong>
+						Dans security.yaml pour l'authentification</li>
+				</ul>
+				<p></p>
+			</div>
+
+			<div class="explanation">
+				<h5>🔑 Fichiers créés par make:user</h5>
+				<p>La commande génère automatiquement :</p>
+				<ul>
+					<li>
+						<code>src/Entity/User.php</code>
+						- Entité utilisateur avec email/password</li>
+					<li>
+						<code>src/Repository/UserRepository.php</code>
+						- Repository pour gérer les requêtes</li>
+					<li>Configuration dans
+						<code>security.yaml</code>
+					</li>
+				</ul>
+			</div>
+
+			<h4>3. Créer le système d'authentification</h4>
+			<pre><code class="language-bash">sc make:security:form-login</code></pre>
+			<p class="info">Choisis "SecurityController" comme nom du contrôleur, oui pour logout afin qu'il te crée un logout pour permettre aux users de se déconnecter et non pour générer un test phpunit</p>
+
+			<div class="explanation">
+				<h5>🔑 Fichiers créés par make:security:form-login</h5>
+				<p>Cette commande génère :</p>
+				<ul>
+					<li>
+						<code>src/Controller/SecurityController.php</code>
+						- Login/logout</li>
+					<li>
+						<code>src/Security/AppAuthenticator.php</code>
+						- Logique d'authentification</li>
+					<li>
+						<code>templates/security/login.html.twig</code>
+						- Formulaire de connexion</li>
+				</ul>
+			</div>
+
+			<h4>4. Créer et appliquer la migration</h4>
+			<pre><code class="language-bash">sc doctrine:shema:update -f</code></pre>
+			<p class="info">ou plus court :
+				<code>sc d:s:u -f</code>
+			</p>
+			<p>Cette commande crée les tables dans la base de données selon les entités définies</p>
+			<p>On peut aussi faire
+				<code>sc make:migration</code>
+				pour générer un fichier de migration, puis
+				<code>sc doctrine:migrations:migrate</code>
+				pour appliquer les migrations</p>
+			<div class="explanation">
+				<h5>🔑 Migration et base de données</h5>
+				<p>La commande doctrine:schema:update -f :</p>
+				<ul>
+					<li>Met à jour la base de données selon les entités</li>
+					<li>Crée les tables manquantes</li>
+					<li>Applique les changements de schéma</li>
+				</ul>
+			</div>
+
+			<h4>5. Créer une fixture pour les utilisateurs</h4>
+			<pre><code class="language-bash">sc make:fixtures UserFixtures</code></pre>
+			<p class="info">Corrige l'erreur</p>
+			<p>La commande génère un fichier vide dans
+				<code>src/DataFixtures/UserFixtures.php</code>
+			</p>
+
+			<h5>On va y ajouter du code pour créer des utilisateurs de test</h5>
+			<p>On va modifier la méthode load() pour créer les utilisateurs</p>
+			<p class="warning">La méthode load appartient à notre class qui est un enfant de extends Fixture donc notre class à accès à toutes les méthodes de Fixture et nottament à load qui nous oblige du coup à respecter comment la méthode est définie.</p>
+			<pre><code class="language-php">public function load(ObjectManager $manager): void
+{
+	$user = new User();
+	$user->setEmail('a@aa.aa');
+	$hashedPassword = $this->passwordHasher->hashPassword(
+		$user,
+		'motdepasse'
+	);
+	$user->setPassword($hashedPassword);
+	$manager->persist($user);
+
+	$manager->flush();
+}</code></pre>
+			<p>On va utiliser le service UserPasswordHasherInterface pour hasher les mots de passe, pour ça on doit le déclarer dans contruct pour s'en servir. Construct est appelé à chaque appel de cette classe. Tout ce que l'on déclare dedans peut donc être appelé par $this->
+			</p>
+			<p>On va aussi ajouter la propriété private UserPasswordHasherInterface $passwordHasher; pour pouvoir l'utiliser dans notre méthode load, on met le code du construct juste sous
+				<code>Class UserFixtures ... {</code>
+			</p>
+			<pre><code class="language-php">private UserPasswordHasherInterface $passwordHasher;
+public function __construct(UserPasswordHasherInterface $passwordHasher)
+{
+	$this->passwordHasher = $passwordHasher;
+}</code></pre>
+			<p class="warning">Si on lance
+				<code>
+					sc d:f:l -n</code>
+				qui doit lancer les fixtures et donc nous créer un utilisateur dans la bd on a une erreur
+				<code class="language-bash">
+					Cannot autowire service "App\DataFixtures\UserFixtures": argument "$passwordHasher" of method "__construct()" has type "App\DataFixtures\UserPasswordHasherInterface" but this class was not found.</code>
+			</p>
+			<p class="info">C'est une erreur fréquente quand on tape du code. Pour corriger l'erreur, on doit ajouter le use pour UserPasswordHasherInterface en haut du fichier pour cela on va sur UserPasswordHasherInterface, clic droit → "Import Class", cela nous  ajoute automatiquement en haut de la class
+				<code>use Symfony\Component\PasswordHasher\UserPasswordHasherInterface;</code>
+			</p>
+			<p class="info">Il faut penser à sauvegarder par CTRL+S</p>
+			<p>On peut maintenant lancer la commande
+				<pre><code>sc d:f:l -n</code></pre>
+				pour charger les fixtures et créer l'utilisateur dans la base de données</p>
+			<p class="info">Il est importnat de reconnaitre les erreurs par exemple dans notre cas ona SQLSTATE et ensuite on a une erreur mais Symfony nous guide par Did you forget ... Tu as pas oublié .., prendre le temps de lire ;-). Les deux ereerus qui suivent sont très fréquentes et facile à repérer.</p>
+			<p class="warning">Si on a une erreru du genre de
+				<code class="language-bash">
+					An exception occurred while executing a query: SQLSTATE[HY000]: General error: 1 no such table: user
+				</code>
+				on doit vérifier que l'on a bien créé la table user dans la base de données, pour cela on peut faire
+				<code>sc d:s:u -f</code>
+			</p>
+			<pre><code>sc d:f:l -n</code></pre>
+			<p class="warning">On a encore une erreur
+				<code class="language-bash">
+					Attempted to load class "User" from namespace "App\DataFixtures".Did you forget a "use" statement for "App\Entity\User"?
+				</code>
+				et pour corriger l'erreur, on doit ajouter le use pour User et on sauvegarde, cela va nous ajouter
+				<code>use App\Entity\User;</code>
+			</p>
+			<pre><code>sc d:f:l -n</code></pre>
+			<p class="success">On a maintenant un utilisateur créé dans la base de données.</p>
+
+			<div class="explanation">
+				<h5>🔑 Création de la fixture UserFixtures</h5>
+				<p>La commande
+					<code>sc make:fixtures UserFixtures</code>
+					génère un fichier de base :</p>
+				<ul>
+					<li>
+						<strong>Namespace :</strong>
+						App\DataFixtures</li>
+					<li>
+						<strong>Classe :</strong>
+						Hérite de Fixture</li>
+					<li>
+						<strong>Méthode load() :</strong>
+						À compléter avec nos données</li>
+				</ul>
+				<p>
+					<strong>But :</strong>
+					Créer des données de test automatiquement</p>
+				<p>
+					<strong>méthode persist()</strong>
+					de l'ObjectManager: pour enregistrer les utilisateurs</p>
+				<p>
+					<strong>méthode flush()</strong>
+					de l'ObjectManager: pour appliquer les changements</p>
+
+				<p>On a souvent des boucles avec des persist dedans et après la boucle 1 flush, ça permet d'optimiser les performances.</p>
+			</div>
+
+
+			<h4>8. Configurer l'accès aux routes</h4>
+			<p>Dans
+				<code>config/packages/security.yaml</code>, modifier la section access_control :</p>
+			<pre><code class="language-yaml">access_control:
+    - { path: ^/login, roles: PUBLIC_ACCESS }
+    - { path: ^/home, roles: ROLE_USER }</code></pre>
+
+			<p>
+				<strong>Explication :</strong>
+			</p>
 			<ul>
-				<li>✅ Authentification sécurisée</li>
-				<li>✅ Interface interactive avec drag & drop</li>
-				<li>✅ Base de données SQLite</li>
-				<li>✅ Tests automatisés</li>
-				<li>✅ Profiler de développement</li>
+				<li>
+					<code>^/login</code>
+					→ accessible sans connexion, indispensable</li>
+				<li>
+					<code>^/home</code>
+					→ pour les utilisateurs connectés</li>
+				<li>L'ordre est important (plus spécifique en premier)</li>
+
 			</ul>
+
+			<div class="explanation">
+				<h5>🔑 Configuration des règles d'accès</h5>
+				<p>
+					<strong>access_control dans security.yaml :</strong>
+				</p>
+				<ul>
+					<li>
+						<code>^/login</code>
+						→ PUBLIC_ACCESS (accessible sans login)</li>
+					<li>
+						<code>^/</code>
+						→ ROLE_USER (toutes les autres routes protégées)</li>
+
+				</ul>
+				<p>
+					<strong>Effet :</strong>
+					Redirection automatique vers /login si non connecté</p>
+			</div>
+			<h4>9. Création d'un HomeController avec une vue twig</h4>
+			<pre><code>sc make:controller HomeController</code></pre>
+			<p class="info">On répond non à la question pour créer un fichier test (on a pas installé les outils pour). Et comparer à toute à l'heure on va avoir des fichiers twigs qui vont être créés :</p>
+			<ul>
+				<li>
+					<code>src/Controller/HomeController.php</code>
+					- Contrôleur pour la page d'accueil</li>
+				<li>
+					<code>templates/home/index.html.twig</code>
+					- Template Twig pour la vue</li>
+				<li>
+					<code>templates/base.html.twig</code>
+					- Template de base Twig</li>
+			</ul>
+			<h4>10. Vider le cache et tester</h4>
+			<pre><code class="language-bash">sc cache:clear</code></pre>
+			<p>Cette commande vide le cache Symfony pour que les modifications de sécurité soient prises en compte.</p>
+			<p>
+				<strong>Test de l'authentification :</strong>
+			</p>
+			<p>Accéder à
+				<code>http://localhost:8080/home</code>
+			</p>
+			<p class="info">✅ Vous devriez être redirigé vers /login</p>
+			<p>
+				<strong>Vérifications :</strong>
+			</p>
+			<ul>
+				<li>URL change automatiquement pour /login</li>
+				<li>Formulaire de connexion affiché</li>
+				<li>Champs email et password présents</li>
+			</ul>
+			<h4>10. Se connecter</h4>
+			<p>
+				<strong>Identifiants créés par la fixture :</strong>
+			</p>
+			<ul>
+				<li>
+					<strong>Email :</strong>
+					a@aa.aa</li>
+				<li>
+					<strong>Password :</strong>
+					motdepasse</li>
+			</ul>
+			<p class="success">✅ Authentification réussie !</p>
+			<p>Vous êtes maintenant connecté et pouvez accéder aux pages protégées.</p>
+
+			<h4>12. Installer la debugbar</h4>
+			<pre><code>composer require --dev symfony/profiler-pack</code></pre>
+			<p class="info">La debugbar permet de voir les requêtes, les routes, les entités, les requêtes SQL...</p>
+			<p>On peut la voir en bas de la page à condition que tu ai pensé à vider le cache ;-)</p>
+			<p class="info">Avant de continuer va jeter un coup d'oeil au HomeController et au deux fichiers de template. C'est important</p>
+			<div class="explanation">
+				<h5>🔧 Debugbar Symfony</h5>
+				<p>La debugbar affiche :</p>
+				<ul>
+					<li>
+						<strong>Requêtes SQL :</strong>
+						Toutes les requêtes exécutées</li>
+					<li>
+						<strong>Routes :</strong>
+						Routes utilisées dans la requête</li>
+					<li>
+						<strong>Entités :</strong>
+						Données chargées depuis la base</li>
+					<li>
+						<strong>Performances :</strong>
+						Temps d'exécution</li>
+					<li>
+						<strong>Utilisateurs :</strong>
+						Informations sur les utilisateurs connectés et possibilité de se déconnecter</li>
+				</ul>
+				<br>
+				<h5>le fichier Controller avec twig</h5>
+				<p>Le fichier
+					<code>src/Controller/HomeController.php</code>
+					contient la logique pour afficher la page d'accueil :</p>
+				<ul>
+					<li>La méthode
+						<code>index()</code>
+						retourne le template
+						<code>home/index.html.twig</code>
+					</li>
+					<li>Response: permet de renvoyer une réponse HTTP avec le contenu du template, on peux renvoyer des fichiers, des jsons, des images ...</li>
+					<li>Les paramètres du twig: permettent de passer des variables au template,  dans
+						<code>
+							return $this->render('home/index.html.twig', ['controller_name' => 'HomeController',]);</code>,on renvoie la variable
+						<code>controller_name</code>, et on peut accéder à ces variables dans le template avec
+						<code>{{ controller_name }}</code>.</li>
+				</ul>
+			</div>
+			<h4>13. Déconnexion</h4>
+			<p>il suffit d'aller sur
+				<code>http://localhost:8080/logout</code>
+				pour se déconnecter, on est redirigé vers la page de login.</p>
+			<p class="info">On voit dans la debugbar que l'on est déconnecté.</p>
 		</div>
+
+
 	</body>
-</html></body></html></body></html>
+</html>
