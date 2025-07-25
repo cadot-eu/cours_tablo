@@ -1,20 +1,41 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 	<head>
 		<meta charset="UTF-8">
 		<title>Guide Symfony Prêt Travaux - Tablo</title>
-		<link
-		rel="stylesheet" href="styles.css">
-		<!-- Prism.js pour la coloration syntaxique -->
-		<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" rel="stylesheet"/>
-	 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
-		<!-- Dépendances dans l'ordre correct -->
-		 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup-templating.min.js"></script>
-		 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
-		 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-php.min.js"></script>
-		 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-yaml.min.js"></script>
-		 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+		<link rel="stylesheet" href="styles.css">
+		<!-- CSS du thème (choisissez-en un) -->
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+
+		<!-- Scripts Highlight.js -->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/twig.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/php.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/javascript.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/css.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/json.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
+		<!-- Initialisation -->
+		<script>
+			document.addEventListener('DOMContentLoaded', () => {
+				document.querySelectorAll('script[type="text/plain"]').forEach(el => {
+					const pre = document.createElement('pre')
+					const code = document.createElement('code')
+					code.className = el.className
+					code.textContent = el.textContent.trim()
+					pre.appendChild(code)
+					el.parentNode.replaceChild(pre, el)
+				})
+				hljs.highlightAll()
+			})
+		</script>
+
+
+
 	</head>
+
 	<body>
 		<h1>🏗️ Guide de Construction d'une Application de Gestion de Prêt Travaux avec Symfony 7.3</h1>
 		<div class="danger">Attention : Si tu veux vraiment retenir le code tape le! pas de copier-coller!!! J'ai pris le temps de metre le minimum de code à taper</div>
@@ -46,20 +67,25 @@
 				<ul>
 					<li>
 						<strong>dc up -d :</strong>
-						Démarre le conteneur en arrière-plan</li>
+						Démarre le conteneur en arrière-plan
+					</li>
 					<li>
 						<strong>dlogs tablo :</strong>
-						Affiche les logs en temps réel</li>
+						Affiche les logs en temps réel
+					</li>
 					<li>
 						<strong>Installation complète :</strong>
-						Tous les bundles essentiels (Twig, Doctrine, Security)</li>
+						Tous les bundles essentiels (Twig, Doctrine, Security)
+					</li>
 					<li>
 						<strong>Structure prête :</strong>
-						bin/console automatiquement créé</li>
+						bin/console automatiquement créé
+					</li>
 				</ul>
 				<p>
 					<strong>Attendre le message Apache :</strong>
-					Indique que Symfony est entièrement opérationnel</p>
+					Indique que Symfony est entièrement opérationnel
+				</p>
 			</div>
 
 			<h4>2. On voit notre docker</h4>
@@ -69,27 +95,34 @@
 				<h5>🔍 Inspection des conteneurs actifs</h5>
 				<p>La commande
 					<code>docker ps</code>
-					affiche :</p>
+					affiche :
+				</p>
 				<ul>
 					<li>
 						<strong>CONTAINER ID :</strong>
-						Pour tuer le docker (docker kill numéro) ou avoir des infos (docker inspect numéro)</li>
+						Pour tuer le docker (docker kill numéro) ou avoir des infos (docker inspect numéro)
+					</li>
 					<li>
 						<strong>Image :</strong>
-						cadoteu/symfony5-6-runsite (docker avec tout dedans pour faire tourner Symfony)</li>
+						cadoteu/symfony5-6-runsite (docker avec tout dedans pour faire tourner Symfony)
+					</li>
 					<li>
 						<strong>STATUS :</strong>
-						Pour voir si le docker tourne (Up)</li>
+						Pour voir si le docker tourne (Up)
+					</li>
 					<li>
 						<strong>PORTS :</strong>
-						0.0.0.0:8080->80 et 0.0.0.0:4443->443</li>
+						0.0.0.0:8080->80 et 0.0.0.0:4443->443
+					</li>
 					<li>
 						<strong>NAME :</strong>
-						tablo (nom du conteneur)</li>
+						tablo (nom du conteneur)
+					</li>
 				</ul>
 				<p>
 					<strong>Accès web :</strong>
-					http://localhost:8080 ou https://localhost:4443</p>
+					http://localhost:8080 ou https://localhost:4443
+				</p>
 			</div>
 
 			<h4>3. Accès conteneur</h4>
@@ -101,16 +134,20 @@
 				<ul>
 					<li>
 						<strong>Shell bash :</strong>
-						Ligne de commande complète</li>
+						Ligne de commande complète
+					</li>
 					<li>
 						<strong>Environnement Symfony :</strong>
-						Tous les outils disponibles</li>
+						Tous les outils disponibles
+					</li>
 					<li>
 						<strong>sc :</strong>
-						Raccourci pour php bin/console</li>
+						Raccourci pour php bin/console
+					</li>
 					<li>
 						<strong>Composer :</strong>
-						Gestionnaire de dépendances PHP</li>
+						Gestionnaire de dépendances PHP
+					</li>
 				</ul>
 			</div>
 
@@ -123,25 +160,32 @@
 				<ul>
 					<li>
 						<strong>sc list :</strong>
-						Liste des commandes disponibles</li>
+						Liste des commandes disponibles
+					</li>
 					<li>
 						<strong>sc make:controller :</strong>
-						Crée un contrôleur</li>
+						Crée un contrôleur
+					</li>
 					<li>
 						<strong>sc make:entity :</strong>
-						Crée une entité Doctrine</li>
+						Crée une entité Doctrine
+					</li>
 					<li>
 						<strong>sc doctrine:schema:update -f :</strong>
-						Met à jour la base</li>
+						Met à jour la base
+					</li>
 					<li>
 						<strong>sc doctrine:fixtures:load :</strong>
-						Charge les fixtures</li>
+						Charge les fixtures
+					</li>
 					<li>
 						<strong>sc cache:clear :</strong>
-						Vide le cache</li>
+						Vide le cache
+					</li>
 					<li>
 						<strong>sc debug:router :</strong>
-						Affiche les routes</li>
+						Affiche les routes
+					</li>
 				</ul>
 			</div>
 
@@ -152,12 +196,13 @@
 				<h5>🚪 Retour à l'environnement local</h5>
 				<p>La commande
 					<code>exit</code>
-					ferme la session dans le conteneur et retourne à votre terminal local.</p>
+					ferme la session dans le conteneur et retourne à votre terminal local.
+				</p>
 			</div>
 
 			<h4>6. Configuration .env</h4>
 			<p>on ouvre vscode sur notre projet
-				<pre><code>cd project-tablo && code .</code></pre>
+			<pre><code>cd project-tablo && code .</code></pre>
 			</p>
 			<p>On ajoute dans .env.local (il faut le créer)</p>
 			<pre><code>APP_ENV=dev
@@ -169,27 +214,34 @@
 				<ul>
 					<li>
 						<strong>.env :</strong>
-						Variables par défaut (versionnées)</li>
+						Variables par défaut (versionnées)
+					</li>
 					<li>
 						<strong>.env.local :</strong>
-						Variables locales (non versionnées)</li>
+						Variables locales (non versionnées)
+					</li>
 					<li>
 						<strong>Priorité :</strong>
-						.env.local remplace .env</li>
+						.env.local remplace .env
+					</li>
 					<li>
 						<strong>APP_ENV=dev :</strong>
-						Mode développement</li>
+						Mode développement
+					</li>
 					<li>
 						<strong>PRET_TOTAL :</strong>
-						Variable personnalisée pour notre app</li>
+						Variable personnalisée pour notre app
+					</li>
 				</ul>
 				<p>
 					<strong>Accès dans le code :</strong>
-					$_ENV['PRET_TOTAL'] ou via DotEnv</p>
+					$_ENV['PRET_TOTAL'] ou via DotEnv
+				</p>
 			</div>
 
 			<h4>7. On crée le contrôleur en allant dans le docker (tu peux utiliser le terminal de vscode et faire
-				<code>dbash tablo</code>)</h4>
+				<code>dbash tablo</code>)
+			</h4>
 			<pre><code>sc make:controller TestController</code></pre>
 			<p>On voit que l'on a une erreur (background rouge) qui dit que la commande make n'existe pas et qu'il faut ajouter la dépendance composer par
 				<code>composer require symfony/maker-bundle --dev</code>
@@ -217,13 +269,16 @@
 				<ul>
 					<li>
 						<strong>Problème :</strong>
-						MakerBundle non installé</li>
+						MakerBundle non installé
+					</li>
 					<li>
 						<strong>Solution :</strong>
-						composer require symfony/maker-bundle --dev</li>
+						composer require symfony/maker-bundle --dev
+					</li>
 					<li>
 						<strong>--dev :</strong>
-						Dépendance de développement uniquement</li>
+						Dépendance de développement uniquement
+					</li>
 				</ul>
 				<p>
 					<strong>Structure du contrôleur créé :</strong>
@@ -231,30 +286,37 @@
 				<ul>
 					<li>
 						<strong>Namespace :</strong>
-						App\Controller (organisation du code)</li>
+						App\Controller (organisation du code)
+					</li>
 					<li>
 						<strong>Use statements :</strong>
-						Imports des classes nécessaires</li>
+						Imports des classes nécessaires
+					</li>
 					<li>
 						<strong>Héritage :</strong>
-						extends AbstractController (méthodes héritées)</li>
+						extends AbstractController (méthodes héritées)
+					</li>
 					<li>
 						<strong>Route :</strong>
-						#[Route('/test', name: 'app_test')]</li>
+						#[Route('/test', name: 'app_test')]
+					</li>
 					<li>
 						<strong>Méthode :</strong>
-						public function index(): JsonResponse</li>
+						public function index(): JsonResponse
+					</li>
 				</ul>
 				<p>
 					<strong>Test :</strong>
-					http://localhost:8080/test affiche la réponse JSON</p>
+					http://localhost:8080/test affiche la réponse JSON
+				</p>
 			</div>
 
 			<h4>Questions</h4>
 			<ol>
 				<li>
 					<strong>Composer installe des librairies JavaScript :</strong>
-					Oui / Non ?</li>
+					Oui / Non ?
+				</li>
 				<li>
 					<strong>Pour ajouter une dépendance avec Composer, on utilise :</strong>
 					<code>composer ______</code>
@@ -269,7 +331,8 @@
 					<code>.env</code>
 					TOTO=1 et dans
 					<code>.env.local</code>
-					TOTO=2, notre application aura quelle valeur pour TOTO ?</li>
+					TOTO=2, notre application aura quelle valeur pour TOTO ?
+				</li>
 				<li>
 					<strong>Comment créer un contrôleur ?</strong>
 					<code>sc ______</code>
@@ -285,7 +348,8 @@
 				</li>
 				<li>
 					<strong>Exercice pratique :</strong>
-					Essayez de créer une route à la main dans le contrôleur qui affiche une réponse HTML "Hello World" (sans utiliser de template Twig, juste du HTML direct)</li>
+					Essayez de créer une route à la main dans le contrôleur qui affiche une réponse HTML "Hello World" (sans utiliser de template Twig, juste du HTML direct)
+				</li>
 			</ol>
 
 			<div class="explanation">
@@ -296,16 +360,20 @@
 				<ul>
 					<li>
 						<strong>composer.json :</strong>
-						Définit les dépendances du projet</li>
+						Définit les dépendances du projet
+					</li>
 					<li>
 						<strong>vendor/ :</strong>
-						Dossier des librairies installées</li>
+						Dossier des librairies installées
+					</li>
 					<li>
 						<strong>--dev :</strong>
-						Outils de développement (tests, debug, maker)</li>
+						Outils de développement (tests, debug, maker)
+					</li>
 					<li>
 						<strong>Autoload :</strong>
-						Chargement automatique des classes</li>
+						Chargement automatique des classes
+					</li>
 				</ul>
 				<p>
 					<strong>Messages d'erreur Symfony :</strong>
@@ -313,17 +381,21 @@
 				<ul>
 					<li>
 						<strong>Explicites :</strong>
-						Indiquent souvent la solution</li>
+						Indiquent souvent la solution
+					</li>
 					<li>
 						<strong>Background rouge :</strong>
-						Erreurs critiques dans le terminal</li>
+						Erreurs critiques dans le terminal
+					</li>
 					<li>
 						<strong>Suggestions :</strong>
-						Commandes à exécuter pour corriger</li>
+						Commandes à exécuter pour corriger
+					</li>
 				</ul>
 				<p>
 					<strong>Aide contextuelle :</strong>
-					--help sur toutes les commandes pour plus d'infos</p>
+					--help sur toutes les commandes pour plus d'infos
+				</p>
 			</div>
 
 		</div>
@@ -358,26 +430,32 @@
 				<ul>
 					<li>
 						<strong>Doctrine ORM :</strong>
-						Mapping objet-relationnel pour PHP</li>
+						Mapping objet-relationnel pour PHP
+					</li>
 					<li>
 						<strong>Doctrine Bundle :</strong>
-						Intégration Symfony</li>
+						Intégration Symfony
+					</li>
 					<li>
 						<strong>Doctrine Migrations :</strong>
-						Versioning de la base de données</li>
+						Versioning de la base de données
+					</li>
 					<li>
 						<strong>Doctrine Fixtures :</strong>
-						Données de test</li>
+						Données de test
+					</li>
 				</ul>
 				<p>
 					<strong>Avantage :</strong>
-					Une seule commande installe tout l'écosystème base de données</p>
+					Une seule commande installe tout l'écosystème base de données
+				</p>
 			</div>
 
 			<h4>3. Configurer SQLite dans .env</h4>
 			<p>Modifier le fichier
 				<code>.env</code>
-				pour changer la configuration de base de données :</p>
+				pour changer la configuration de base de données :
+			</p>
 			<p># Commenter PostgreSQL (ligne par défaut)</p>
 			<pre><code class="language-bash"># DATABASE_URL="postgresql://app:!ChangeMe!@127.0.0.1:5432/app?serverVersion=16&charset=utf8"
 </code></pre>
@@ -389,23 +467,29 @@
 				<ul>
 					<li>
 						<strong>Simplicité :</strong>
-						Pas de serveur à installer</li>
+						Pas de serveur à installer
+					</li>
 					<li>
 						<strong>Fichier unique :</strong>
-						Base stockée dans var/data.db</li>
+						Base stockée dans var/data.db
+					</li>
 					<li>
 						<strong>Portable :</strong>
-						Fonctionne sur tous les systèmes</li>
+						Fonctionne sur tous les systèmes
+					</li>
 					<li>
 						<strong>Rapide :</strong>
-						Idéal pour le développement et les tests</li>
+						Idéal pour le développement et les tests
+					</li>
 				</ul>
 				<p>
 					<strong>URL format :</strong>
-					sqlite:///chemin/vers/fichier.db</p>
+					sqlite:///chemin/vers/fichier.db
+				</p>
 				<p>
 					<strong>%kernel.project_dir% :</strong>
-					Variable Symfony = racine du projet</p>
+					Variable Symfony = racine du projet
+				</p>
 			</div>
 
 			<h4>4. Créer la base de données</h4>
@@ -415,7 +499,8 @@
 			</p>
 			<p>Cette commande crée le fichier SQLite
 				<code>var/data.db</code>
-				s'il n'existe pas</p>
+				s'il n'existe pas
+			</p>
 
 			<div class="explanation">
 				<h5>🗄️ Création de la base SQLite</h5>
@@ -423,20 +508,25 @@
 				<ul>
 					<li>
 						<strong>Lit DATABASE_URL :</strong>
-						Depuis .env ou .env.local</li>
+						Depuis .env ou .env.local
+					</li>
 					<li>
 						<strong>Crée le fichier :</strong>
-						var/data.db pour SQLite</li>
+						var/data.db pour SQLite
+					</li>
 					<li>
 						<strong>Permissions :</strong>
-						Fichier accessible en lecture/écriture</li>
+						Fichier accessible en lecture/écriture
+					</li>
 					<li>
 						<strong>Vérification :</strong>
-						Erreur si la base existe déjà</li>
+						Erreur si la base existe déjà
+					</li>
 				</ul>
 				<p>
 					<strong>Raccourci :</strong>
-					sc d:d:c pour aller plus vite</p>
+					sc d:d:c pour aller plus vite
+				</p>
 			</div>
 
 			<h4>5. Vérifier la configuration</h4>
@@ -452,20 +542,25 @@
 				<ul>
 					<li>
 						<strong>Connexion :</strong>
-						DATABASE_URL valide</li>
+						DATABASE_URL valide
+					</li>
 					<li>
 						<strong>Permissions :</strong>
-						Écriture possible sur le fichier</li>
+						Écriture possible sur le fichier
+					</li>
 					<li>
 						<strong>Configuration :</strong>
-						Doctrine bien configuré</li>
+						Doctrine bien configuré
+					</li>
 					<li>
 						<strong>Schéma :</strong>
-						Prêt à recevoir des entités</li>
+						Prêt à recevoir des entités
+					</li>
 				</ul>
 				<p>
 					<strong>Message attendu :</strong>
-					"Database schema created successfully!" ou "Nothing to update"</p>
+					"Database schema created successfully!" ou "Nothing to update"
+				</p>
 			</div>
 
 			<h4>6. Créer l'entité User</h4>
@@ -479,16 +574,20 @@
 				<ul>
 					<li>
 						<strong>Entité User :</strong>
-						Représente un utilisateur</li>
+						Représente un utilisateur
+					</li>
 					<li>
 						<strong>Propriétés :</strong>
-						Email, Password, Roles</li>
+						Email, Password, Roles
+					</li>
 					<li>
 						<strong>Repository :</strong>
-						Gestion des requêtes sur la table user</li>
+						Gestion des requêtes sur la table user
+					</li>
 					<li>
 						<strong>Configuration :</strong>
-						Dans security.yaml pour l'authentification</li>
+						Dans security.yaml pour l'authentification
+					</li>
 				</ul>
 				<p></p>
 			</div>
@@ -499,10 +598,12 @@
 				<ul>
 					<li>
 						<code>src/Entity/User.php</code>
-						- Entité utilisateur avec email/password</li>
+						- Entité utilisateur avec email/password
+					</li>
 					<li>
 						<code>src/Repository/UserRepository.php</code>
-						- Repository pour gérer les requêtes</li>
+						- Repository pour gérer les requêtes
+					</li>
 					<li>Configuration dans
 						<code>security.yaml</code>
 					</li>
@@ -519,13 +620,16 @@
 				<ul>
 					<li>
 						<code>src/Controller/SecurityController.php</code>
-						- Login/logout</li>
+						- Login/logout
+					</li>
 					<li>
 						<code>src/Security/AppAuthenticator.php</code>
-						- Logique d'authentification</li>
+						- Logique d'authentification
+					</li>
 					<li>
 						<code>templates/security/login.html.twig</code>
-						- Formulaire de connexion</li>
+						- Formulaire de connexion
+					</li>
 				</ul>
 			</div>
 
@@ -539,7 +643,8 @@
 				<code>sc make:migration</code>
 				pour générer un fichier de migration, puis
 				<code>sc doctrine:migrations:migrate</code>
-				pour appliquer les migrations</p>
+				pour appliquer les migrations
+			</p>
 			<div class="explanation">
 				<h5>🔑 Migration et base de données</h5>
 				<p>La commande doctrine:schema:update -f :</p>
@@ -590,14 +695,14 @@ public function __construct(UserPasswordHasherInterface $passwordHasher)
 				<code class="language-bash">
 					Cannot autowire service "App\DataFixtures\UserFixtures": argument "$passwordHasher" of method "__construct()" has type "App\DataFixtures\UserPasswordHasherInterface" but this class was not found.</code>
 			</p>
-			<p class="info">C'est une erreur fréquente quand on tape du code. Pour corriger l'erreur, on doit ajouter le use pour UserPasswordHasherInterface en haut du fichier pour cela on va sur UserPasswordHasherInterface, clic droit → "Import Class", cela nous  ajoute automatiquement en haut de la class
+			<p class="info">C'est une erreur fréquente quand on tape du code. Pour corriger l'erreur, on doit ajouter le use pour UserPasswordHasherInterface en haut du fichier pour cela on va sur UserPasswordHasherInterface, clic droit → "Import Class", cela nous ajoute automatiquement en haut de la class
 				<code>use Symfony\Component\PasswordHasher\UserPasswordHasherInterface;</code>
 			</p>
 			<p class="info">Il faut penser à sauvegarder par CTRL+S</p>
 			<p>On peut maintenant lancer la commande
-				<pre><code>sc d:f:l -n</code></pre>
-				pour charger les fixtures et créer l'utilisateur dans la base de données</p>
-			<p class="info">Il est importnat de reconnaitre les erreurs par exemple dans notre cas ona SQLSTATE et ensuite on a une erreur mais Symfony nous guide par Did you forget ... Tu as pas oublié .., prendre le temps de lire ;-). Les deux ereerus qui suivent sont très fréquentes et facile à repérer.</p>
+			<pre><code>sc d:f:l -n</code></pre>
+			pour charger les fixtures et créer l'utilisateur dans la base de données</p>
+			<p class="info">Il est importnat de reconnaitre les erreurs par exemple dans notre cas ona SQLSTATE et ensuite on a une erreur mais Symfony nous guide par Did you forget ... Tu as pas oublié .., prendre le temps de lire ;-). Les deux ereurus qui suivent sont très fréquentes et facile à repérer.</p>
 			<p class="warning">Si on a une erreru du genre de
 				<code class="language-bash">
 					An exception occurred while executing a query: SQLSTATE[HY000]: General error: 1 no such table: user
@@ -620,27 +725,34 @@ public function __construct(UserPasswordHasherInterface $passwordHasher)
 				<h5>🔑 Création de la fixture UserFixtures</h5>
 				<p>La commande
 					<code>sc make:fixtures UserFixtures</code>
-					génère un fichier de base :</p>
+					génère un fichier de base :
+				</p>
 				<ul>
 					<li>
 						<strong>Namespace :</strong>
-						App\DataFixtures</li>
+						App\DataFixtures
+					</li>
 					<li>
 						<strong>Classe :</strong>
-						Hérite de Fixture</li>
+						Hérite de Fixture
+					</li>
 					<li>
 						<strong>Méthode load() :</strong>
-						À compléter avec nos données</li>
+						À compléter avec nos données
+					</li>
 				</ul>
 				<p>
 					<strong>But :</strong>
-					Créer des données de test automatiquement</p>
+					Créer des données de test automatiquement
+				</p>
 				<p>
 					<strong>méthode persist()</strong>
-					de l'ObjectManager: pour enregistrer les utilisateurs</p>
+					de l'ObjectManager: pour enregistrer les utilisateurs
+				</p>
 				<p>
 					<strong>méthode flush()</strong>
-					de l'ObjectManager: pour appliquer les changements</p>
+					de l'ObjectManager: pour appliquer les changements
+				</p>
 
 				<p>On a souvent des boucles avec des persist dedans et après la boucle 1 flush, ça permet d'optimiser les performances.</p>
 			</div>
@@ -648,7 +760,8 @@ public function __construct(UserPasswordHasherInterface $passwordHasher)
 
 			<h4>8. Configurer l'accès aux routes</h4>
 			<p>Dans
-				<code>config/packages/security.yaml</code>, modifier la section access_control :</p>
+				<code>config/packages/security.yaml</code>, modifier la section access_control :
+			</p>
 			<pre><code class="language-yaml">access_control:
     - { path: ^/login, roles: PUBLIC_ACCESS }
     - { path: ^/home, roles: ROLE_USER }</code></pre>
@@ -659,10 +772,12 @@ public function __construct(UserPasswordHasherInterface $passwordHasher)
 			<ul>
 				<li>
 					<code>^/login</code>
-					→ accessible sans connexion, indispensable</li>
+					→ accessible sans connexion, indispensable
+				</li>
 				<li>
 					<code>^/home</code>
-					→ pour les utilisateurs connectés</li>
+					→ pour les utilisateurs connectés
+				</li>
 				<li>L'ordre est important (plus spécifique en premier)</li>
 
 			</ul>
@@ -675,15 +790,18 @@ public function __construct(UserPasswordHasherInterface $passwordHasher)
 				<ul>
 					<li>
 						<code>^/login</code>
-						→ PUBLIC_ACCESS (accessible sans login)</li>
+						→ PUBLIC_ACCESS (accessible sans login)
+					</li>
 					<li>
 						<code>^/</code>
-						→ ROLE_USER (toutes les autres routes protégées)</li>
+						→ ROLE_USER (toutes les autres routes protégées)
+					</li>
 
 				</ul>
 				<p>
 					<strong>Effet :</strong>
-					Redirection automatique vers /login si non connecté</p>
+					Redirection automatique vers /login si non connecté
+				</p>
 			</div>
 			<h4>9. Création d'un HomeController avec une vue twig</h4>
 			<pre><code>sc make:controller HomeController</code></pre>
@@ -691,13 +809,16 @@ public function __construct(UserPasswordHasherInterface $passwordHasher)
 			<ul>
 				<li>
 					<code>src/Controller/HomeController.php</code>
-					- Contrôleur pour la page d'accueil</li>
+					- Contrôleur pour la page d'accueil
+				</li>
 				<li>
 					<code>templates/home/index.html.twig</code>
-					- Template Twig pour la vue</li>
+					- Template Twig pour la vue
+				</li>
 				<li>
 					<code>templates/base.html.twig</code>
-					- Template de base Twig</li>
+					- Template de base Twig
+				</li>
 			</ul>
 			<h4>10. Vider le cache et tester</h4>
 			<pre><code class="language-bash">sc cache:clear</code></pre>
@@ -724,10 +845,12 @@ public function __construct(UserPasswordHasherInterface $passwordHasher)
 			<ul>
 				<li>
 					<strong>Email :</strong>
-					a@aa.aa</li>
+					a@aa.aa
+				</li>
 				<li>
 					<strong>Password :</strong>
-					motdepasse</li>
+					motdepasse
+				</li>
 			</ul>
 			<p class="success">✅ Authentification réussie !</p>
 			<p>Vous êtes maintenant connecté et pouvez accéder aux pages protégées.</p>
@@ -743,25 +866,31 @@ public function __construct(UserPasswordHasherInterface $passwordHasher)
 				<ul>
 					<li>
 						<strong>Requêtes SQL :</strong>
-						Toutes les requêtes exécutées</li>
+						Toutes les requêtes exécutées
+					</li>
 					<li>
 						<strong>Routes :</strong>
-						Routes utilisées dans la requête</li>
+						Routes utilisées dans la requête
+					</li>
 					<li>
 						<strong>Entités :</strong>
-						Données chargées depuis la base</li>
+						Données chargées depuis la base
+					</li>
 					<li>
 						<strong>Performances :</strong>
-						Temps d'exécution</li>
+						Temps d'exécution
+					</li>
 					<li>
 						<strong>Utilisateurs :</strong>
-						Informations sur les utilisateurs connectés et possibilité de se déconnecter</li>
+						Informations sur les utilisateurs connectés et possibilité de se déconnecter
+					</li>
 				</ul>
 				<br>
 				<h5>le fichier Controller avec twig</h5>
 				<p>Le fichier
 					<code>src/Controller/HomeController.php</code>
-					contient la logique pour afficher la page d'accueil :</p>
+					contient la logique pour afficher la page d'accueil :
+				</p>
 				<ul>
 					<li>La méthode
 						<code>index()</code>
@@ -769,20 +898,382 @@ public function __construct(UserPasswordHasherInterface $passwordHasher)
 						<code>home/index.html.twig</code>
 					</li>
 					<li>Response: permet de renvoyer une réponse HTTP avec le contenu du template, on peux renvoyer des fichiers, des jsons, des images ...</li>
-					<li>Les paramètres du twig: permettent de passer des variables au template,  dans
+					<li>Les paramètres du twig: permettent de passer des variables au template, dans
 						<code>
 							return $this->render('home/index.html.twig', ['controller_name' => 'HomeController',]);</code>,on renvoie la variable
 						<code>controller_name</code>, et on peut accéder à ces variables dans le template avec
-						<code>{{ controller_name }}</code>.</li>
+						<code>{{ controller_name }}</code>.
+					</li>
 				</ul>
 			</div>
 			<h4>13. Déconnexion</h4>
 			<p>il suffit d'aller sur
 				<code>http://localhost:8080/logout</code>
-				pour se déconnecter, on est redirigé vers la page de login.</p>
+				pour se déconnecter, on est redirigé vers la page de login.
+			</p>
 			<p class="info">On voit dans la debugbar que l'on est déconnecté.</p>
 		</div>
 
+		<div id="part2" class="part">
+			<h2>🎨 Partie 2: Interface et tableaux interactifs</h2>
+			<h3>🖼️ Configuration de l'interface</h3>
+			<h4>1. Installer AssetMapper</h4>
+			<pre><code>composer require symfony/asset-mapper</code></pre>
+			<div class="explanation">
+				<h5>⚛️ Gestion des assets avec AssetMapper</h5>
+				<p>AssetMapper est la nouvelle approche de Symfony pour gérer les assets (images, styles, scripts) :</p>
+				<ul>
+					<li>
+						<strong>Pas de build step :</strong>
+						Pas besoin de Webpack ou Vite
+					</li>
+					<li>
+						<strong>ES6 modules :</strong>
+						Support natif des modules JavaScript
+					</li>
+					<li>
+						<strong>Import maps :</strong>
+						Résolution automatique des dépendances
+					</li>
+					<li>
+						<strong>CSS modernes :</strong>
+						Support des nouvelles fonctionnalités CSS
+					</li>
+				</ul>
+				<p>
+					<strong>Avantage :</strong>
+					Plus simple que les bundlers traditionnels, idéal pour les projets sans build complexe
+				</p>
+				<p class="warning">Il y toujours le problème de cache mais en plus un autre problème se pose. Quand un fichier est modifié, il n'est pas toujours rechargé automatiquement dans le navigateur. Pour éviter d'avoir à taper des commandes à chaque fois que le twig,js... est modifié, il suffit de lancer dans un terminal la commande ./refresh.sh. C'est un script qui vérifie si il y a eu des modifs et mets à jour les assets par la commande
+					<code>sc asset-map:compile</code>
+				</p>
+				<p class="info">Asset mapper à créer des fichiers
+				<ul>
+					<li>
+						<code>assets/</code>
+						- Dossier pour les assets (images, styles, scripts)
+					</li>
+					<li>
+						<code>public/assets/</code>
+						- Dossier public pour les assets compilés
+					</li>
+					<li>
+						<code>config/packages/asset_mapper.yaml</code>
+						- Configuration de AssetMapper
+					</li>
+					<li>modifier le fichier
+						<code>templates/base.html.twig</code>
+						en ajoutant
+						{% block importmap %}{{ importmap('app') }}
+						qui automatiquement insère les fichiers nécessaires.
+					</li>
+					<li>
+						<code>importmap.php</code>
+						qui contient les mappages des imports pour les fichiers JS et CSS.
+					</li>
+				</ul>
+				</p>
+				<p class="info">Jette un coup d'oeil dans les fichiers. ;-)</p>
+			</div>
+			<h4>2. Installer Bootstrap par importmap</h4>
+			<pre><code>sc importmap:require bootstrap</code></pre>
+			<p class="danger">Il est important de voir ce que notre import à installé dans notre cas bootstrap, @popperjs/core, bootstrap/dist/css/bootstrap.min.css, ces fichiers sont mis dans le répertoire /vendor et sont compilés par asset mapper dans le dossier public en dev sous leur nom toto.js par exemple et en prod par toto6543.js par exemple pour que le navigateur change pense que c'est un nouveau fichier à chaque fois que tu mets le site à jour.</p>
+			<p class="info">On veut utiliser bootstrap dans notre projet, notre fichier base.html.twig à déjà
+				<code>{{importmap('app')}}</code>
+				ce qui va nous permettre d'utiliser les imports dans notre fichier automatiquement
+				<code>app.js</code>
+			</p>
+			<p>On va maintenant modifier le fichier
+				<code>assets/app.js</code>
+				pour importer Bootstrap et son css:
+			</p>
+			<pre><code class="language-js">import 'bootstrap';import 'bootstrap/dist/css/bootstrap.min.css';</code></pre>
 
+			<p>Actualise ta page pour voir les changements.
+			<pre><code>http://localhost:8080/home</code></pre>
+			</p>
+
+			<p class="success">✅ Bootstrap est maintenant intégré !</p>
+			<p>Tu peux maintenant utiliser les classes Bootstrap dans tes templates Twig.</p>
+			<p class="info">Tu peux aussi utiliser les composants JavaScript de Bootstrap en ajoutant les data attributes nécessaires dans tes templates. Par exemple pour un tooltip :
+				<code>data-bs-toggle="tooltip" data-bs-placement="top" title="Super Tooltip"</code>
+				Essaie de le faire sur
+				<code>templates/index.html.twig sur le h1</code>
+				Actualise ta page et met ta souris sur le Hello Controller pour voir le tooltip.
+			</p>
+			<h4>3. Installer Stimulus</h4>
+			<pre><code>composer require symfony/stimulus-bundle</code></pre>
+			<div class="explanation">
+				<h5>⚛️ Framework JS minimal Stimulus</h5>
+				<p>Stimulus est le framework JavaScript recommandé par Symfony, ses principaux avantages sont :</p>
+				<ul>
+					<li>
+						<strong>Léger :</strong>
+						Pas de virtual DOM, manipulation directe du DOM
+					</li>
+					<li>
+						<strong>Intégration facile :</strong>
+						il suffit de mettre
+						<code>data-controller="nom_du_controller"</code>
+						sur l'élément HTML à contrôler.
+					</li>
+					<li>
+						<strong>Composants réutilisables :</strong>
+						Facilité de création de composants interactifs réutilisables.
+					</li>
+					<li>
+						<strong>Organisation :</strong>
+						Structure claire des fichiers et des dossiers. On met les contrôleurs Stimulus dans le dossier
+						<code>assets/controllers</code>, et on peut créer des répertoires dedans et pour appeler un contrôleur dans le répertoire tools on fait
+						<code>data-controller="tools/nom_du_controller" data-target="tools--nom_du_controller"</code>.
+					</li>
+					<li>
+						<strong>Utilisation de cible(target) de Stimulus :</strong>
+						Permet de cibler des éléments spécifiques dans le DOM pour les contrôleurs Stimulus.
+					</li>
+					<li>
+						<strong>Principe :</strong>
+						Ajouter des comportements interactifs sans réécrire tout en JavaScript
+					</li>
+				</ul>
+			</div>
+			<h4>4. Créer un une entity objet qui aura le nom de l'objet et son prix</h4>
+			<pre><code>sc make:entity Produit</code></pre>
+			<p class="info">On créé un champ nom
+				<code>nom puis string de 255 caractères et on dit non quand il demande s'il peut être vide (on oblige à ce qu'il y ait un nom)</code>
+				et un champ prix
+				<code>prix puis integer (on parle toujours en centimes, les float sont dangereux) et on met nullable yes</code>
+				et enter pour quitter. Va voir le fichier
+				<code>src/Entity/Produit.php</code>
+				et son Repository
+				<code>src/Repository/ProduitRepository.php</code>
+			</p>
+			<p>On met à jour la base de donnée avec la commande suivante :</p>
+			<pre><code>sc d:s:c -f</code> pour que proiduit soit créé dedans</pre>
+			<h4>4. des fixtures pour créer des données de test</h4>
+			<pre><code>sc make:fixtures ProductFixtures</code></pre>
+			<p class="info">On un produit de test pour notre application, on ouvre le fichier
+				<code>src/DataFixtures/ProductFixtures.php</code>
+				et on ajoute des produits dans la méthode
+				<code>load</code>. Je te laisse faire sachant que l'on a les méthodes pour modifier un objet produit dans le fichier de l'entité comme setNom. Quand tu as finis lance
+				<code>sc d:f:l (on a pas mis le -n pour que tu vois le message d'avertissement que les données vont être effacées)</code>
+				pour charger les données de test dans la base de données.
+			</p>
+			<p class="warning">Tu peux lancer
+			<pre><code>php bin/console doctrine:query:sql "SELECT * FROM produit"</code></pre>
+			cela te permettra de voir tes produits dans la bd. C'est doctrine qui nous permet de lancer des commandes sql dans la bd directement ;-)</p>
+			<div class="explanation">
+				<h5>🔧 il y a aussi la possibilité d'ajouter sans tout écraser</h5>
+				<pre><code>sc d:f:l --append</code></pre>
+				<p class="info">
+					Si tu veux regrouper tes fixtures et ne lancer qu'un groupe, si tu regardes l'aide par
+					<code>sc d:f:l --help</code>
+					il t'en parle, tu dois ajouter
+					<code>sc d:f:l --group nom_du_groupe</code>
+					<br>Tu dois mettre dans ton fichier fixture
+					<code>implements FixtureGroupInterface</code>
+					après extends Fixture, click droit import class ;-) puis créé une méthode getGroups qui retourne un array donc
+				<pre><code>public static function getGroups():array
+    {
+        return ['nouveau'];
+    }</code></pre>
+				Maintenant tu peux lancer
+				<code>sc d:f:l --group=nouveau</code>
+				et il ne chargera que les fixtures de ce groupe donc userfixture ne sera pas mis dans la bd.
+				Si tu veux ajouter en gardant toutes les fixtures déjà mis
+				<code>sc d:f:l --group=nouveau --append</code>
+				</p>
+			</div>
+			<h4>5. Créer des fakers de plusieurs products</h4>
+			<p>On va utiliser le faker pour créer des produits aléatoires, on va modifier la méthode load de ProductFixtures pour ajouter des produits aléatoires :</p>
+			<pre><code class="language-php">public function load(ObjectManager $manager): void
+{
+	$faker = Factory::create();
+	for ($i = 0; $i < 10; $i++) {
+		$product = new Produit();
+		$product->setNom($faker->word);
+		$product->setPrix($faker->numberBetween(100, 10000)); // Prix entre 1€ et 100€
+		$manager->persist($product);
+	}
+	$manager->flush();
+}</code></pre>
+			<p class="info">On utilise la librairie Faker pour générer des données aléatoires, on peut l'installer avec la commande :</p>
+			<pre><code>composer require --dev fakerphp/faker</code></pre>
+			<p class="danger">Quand tu va faire un click droit import class sur
+				<code>Factory</code>
+				il va te proposer 2 librairies, cela arrive souvent, prend le temps de prendre la bonne. Si tu te trompes efface la ligne use ... qu'il a jouté et recommence le click droit ;-)
+			</p>
+			<p class="info">On peut maintenant lancer
+				<code>sc d:f:l --group=nouveau</code>
+				pour charger les produits aléatoires dans la base de données.
+			</p>
+			<p class="warning">Si tu vérifie tu verras que tu as perdu tes users
+				<code></code>
+				<code>php bin/console doctrine:query:sql "SELECT * FROM user"</code>
+				et que tu as des produits aléatoires dans la base de données
+				<code>php bin/console doctrine:query:sql "SELECT * FROM produit"</code>
+				Si tu veux garder les users et ajouter les produits aléatoires, tu peux lancer la commande
+				<code>sc d:f:l --group=nouveau --append</code>
+				et avant si tu veux remettre toutes les autres fixtures
+				<code>sc d:f:l -n</code>
+			</p>
+			<p class="success">Produits aléatoires créés !</p>
+			<p>Tu peux maintenant utiliser ces produits dans ton application.</p>
+			<h4>6. Affichage des produits par le Controller HomeController dans le twig index.html.twig</h4>
+			<p>On va modifier le fichier
+				<code>src/Controller/HomeController.php</code>
+				pour récupérer les produits depuis la base de données par le repository et les passer au template :
+			</p>
+			<pre><code class="language-php">
+public function index(ProduitRepository $produitRepository): Response
+	{
+		$produits = $produitRepository->findAll();
+
+		return $this->render('home/index.html.twig', [
+			'produits' => $produits,
+		]);
+	}</code></pre>
+			<p class="info">On va maintenant modifier le template (le block body)et ajouter une boucle car on reçois un tableau
+				<code>templates/index.html.twig</code>
+				pour afficher les produits :
+			</p>
+			<script type="text/plain" class="language-twig">
+{% block body %}
+	{% for produit in produits %}
+		{{ produit.id }}
+		{{ produit.nom }}
+		{{ produit.prix }}
+	{% endfor %}
+{% endblock %}
+</script>
+			ou en liste
+			<script type="text/plain" class="language-twig">
+{% block body %}
+	<ul>
+		{% for produit in produits %}
+			<li>{{ produit.id }} - {{ produit.nom }} - {{ produit.prix }}</li>
+		{% endfor %}
+	</ul>
+{% endblock %}
+			</script>
+			ou en tableau bootstrap
+			<script type="text/plain" class="language-twig">{% block body %}
+<table class="table">
+    <thead>
+        <tr>
+			<th>ID</th>
+            <th>Nom</th>
+            <th>Prix</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for produit in produits %}
+            <tr>
+				<td>{{ produit.id }}</td>
+                <td>{{ produit.nom }}</td>
+                <td>{{ produit.prix }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
+ </script>
+
+			<h4>7. On ajoute un bouton pour supprimer un produit</h4>
+			<p>On ajoute une route pour supprimer le produit dans le controller</p>
+			<pre><code class="language-php">#[Route('/delete/{id}', name: 'delete_produit')]
+public function delete(Produit $produit, ObjectManager $manager): Response
+	{
+		$manager->remove($produit);
+		$manager->flush();
+
+		return $this->redirectToRoute('home');
+	}</code></pre>
+			<p class="info">On utilise l'injection de dépendance pour récupérer le bon produit, c'est à dire qu'en mettant/{id} et qu'on à dit dans la méthode <code>delete(Produit ...)</code> doctrine comprend qu'on cherche un produit avec cet id. et on supprime le produit en utilisant la méthode <code>remove()</code> puis on fait un flush() pour appliquer les changements.</p>
+			<p>On ajoute un bouton dans le twig pour supprimer le produit, pour cela on ajoute une collonne action au tr:</p>
+			<p class="info">On se sert de EntityManagerInterface pour gérer les entité, les repository... alors qu'ObjetcManager dans les fixtures est plus générique. Nous partout on se sert de EntityManagerInerface ;-)</p>
+			<script type="text/plain" class="language-twig"><th>Action</th>
+			</script>
+			<p>et on ajoute un bouton dans le td de la boucle</p>
+			<script type="text/plain" class="language-twig">
+<td>
+	<form method="post" action="{{ path('delete_produit', {id: produit.id}) }}">
+		<button type="submit" class="btn btn-danger">Supprimer</button>
+	</form>
+</td>
+			</script>
+			<p class="info">On utilise la méthode POST pour envoyer la requête de suppression, on utilise la méthode path pour générer l'URL de la route delete_produit avec l'id du produit.</p>
+			<p class="success">Bouton de suppression ajouté !</p>
+			<p>Tu peux maintenant supprimer des produits en cliquant sur le bouton.</p>
+			<p class="danger">Tu va avoir une erreur <code>... "App\Controller\Produit". :Did you forget to add a use statement?</code>, normal tu n'as pas fait click droit->import Class</p>"
+			<p class="danger">General error: 8 attempt to write a readonly database signifie qu'il faut faire un chmod 775 sur var/data_dev.db et chown www-data:www-data var/data_dev.db à faire dans le docker</p>
+			<p class="info">Une fois ces erreurs corrigées, tu peux supprimer par <code>http://localhost:8080/delete/18</code> par exemple, c'est un GET. Si on veut autoriser que POST on met dans la route
+				<code>  #[Route('/delete/{id}', name: 'delete_produit', methods: ['POST'])]</code>
+
+			<h4>8. Ajout d'un beau message par phpflasher</h4>
+			<p>On va installer le bundle phpflasher pour afficher des messages de succès, d'erreur...</p>
+			<pre><code>composer require php-flasher/flasher-symfony</code></pre>, exceptionnellement on va aussi lancer une commande qui va l'installer dans public pour qu'il soit accessible sur le site car les pages webs ne peuvent accéder qu'à public, les autres répertoires sont innacessibles par le navigateur.</p>
+			<pre><code>sc flasher:install</code></pre>
+			<p class="info">On va ajouter le code suivant dans le Controller pour afficher un message de succès après la suppression en utilisant l'injection pour avoir accès à flasher dans cette méthode:</p>
+			<pre><code class="language-php">public function delete(Produit $produit, EntityManagerInterface $entityManager, FlasherInterface $flasher): </code></pre>
+			<p class="info">On va ajouter le code suivant dans le Controller pour afficher un message de succès après la suppression en utilisant l'injection pour avoir accès à flasher dans cette méthode:</p>
+			<pre><code class="language-php">$flasher->success('Produit supprimé avec succès !');</code></pre>
+			<p class="success">On peut informer l'utilisateur de ce qui se passe.</p>
+
+			<h4>8. Ajouter un bouton + par bootstrap-icon pour ajouter une ligne vide au début du tableau</h4>
+			<h5>On ajoute bootstrap-icon</h5>
+			<pre><code>sc importmap:require bootstrap-icons/font/bootstrap-icons.css</code></pre> puis on l'ajoute dans notre app.js
+			<pre><code class="language-js">import 'bootstrap-icons/font/bootstrap-icons.css';</code></pre>
+			<p class="info">On peut maintenant utiliser les icônes de bootstrap dans notre twig, par exemple pour ajouter un bouton + on peut ajouter au dessus de table :</p>
+			<script type="text/plain" class="language-twig">
+	<button class="btn btn-success" id="addline">
+		<i class="bi bi-plus-circle-fill me-2"></i>
+		Ajouter un produit
+	</button>
+			</script>
+			<p class="info"> Essaie de remplacer Supprimer par un icône, regarde sur le site <a href="https://icons.getbootstrap.com/">https://icons.getbootstrap.com/</a>" il y a un moteur de recherche ;-)</p>
+
+			<h5>On ajoute un code stimulus qui va ajouter une ligne vide dans notre tableau au début</h5>
+			<p>On va créer un contrôleur Stimulus à partir de rien ce sera plus simple. Créé un fichier
+				<code>assets/controllers/produit_controller.js</code>
+				et ajoute le code suivant :
+			</p>
+			<script type="text/plain" class="language-js">
+import { Controller } from '@hotwired/stimulus';
+export default class extends Controller {
+    connect() {
+
+	}
+}
+</script>
+			<p>Pour simplifier le tuto, on va entourer tout notre code du block body par un div </p>
+			<script type="text/plain" class="language-twig">
+{% block body %}
+<div data-controller="produit">
+	<!-- Le reste de ton code -->
+</div>
+{% endblock %}
+			</script>
+			<p class="info">Si on va sur la page web et que l'on fait click droit et inspecter on a Console en haut et quand on clique dessus on peut voir ce qui se passe en js et dans nos stimulus. Tu devrais voir <code>produit #initialize</code> et <code>produit #connect</code></p>
+
+
+			<p>On créé un code pour notre stimulus le plus simple possible, on le met entre les {}</p>
+			<script type="text/plain" class="language-js">
+				const addLineButton = document.getElementById('addline');
+addLineButton.addEventListener('click', () => {
+	const newRow = document.createElement('tr');
+	newRow.innerHTML = `
+		<td></td>
+		<td></td>
+		<td></td>
+		<td></td>
+	`;
+	document.querySelector('tbody').prepend(newRow);
+});
+</script>
+			<p class="info">En gros ce code,créé une variable <code>addLineButton</code> qui contient le bouton +, puis on lui ajoute un écouteur d'événement qui va créer une nouvelle ligne vide que l'on créé par document.createElement au début du tableau.</p>
+			<p class="success">On a maintenant un bouton qui ajoute une ligne vide au début du tableau.</p>
+		</div>
 	</body>
+
 </html>
