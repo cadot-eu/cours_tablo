@@ -1224,56 +1224,109 @@ public function delete(Produit $produit, ObjectManager $manager): Response
 			<h5>On ajoute bootstrap-icon</h5>
 			<pre><code>sc importmap:require bootstrap-icons/font/bootstrap-icons.css</code></pre> puis on l'ajoute dans notre app.js
 			<pre><code class="language-js">import 'bootstrap-icons/font/bootstrap-icons.css';</code></pre>
-			<p class="info">On peut maintenant utiliser les icônes de bootstrap dans notre twig, par exemple pour ajouter un bouton + on peut ajouter au dessus de table :</p>
+			<p class="info">On peut maintenant utiliser les icônes de bootstrap dans notre twig, par exemple pour changer supprimer par un icone de poubelle on met :</p>
 			<script type="text/plain" class="language-twig">
-	<button class="btn btn-success" id="addline">
-		<i class="bi bi-plus-circle-fill me-2"></i>
-		Ajouter un produit
-	</button>
+		<button type="submit" class="btn btn-danger"><i class="bi bi-trash"></i></button>
 			</script>
-			<p class="info"> Essaie de remplacer Supprimer par un icône, regarde sur le site <a href="https://icons.getbootstrap.com/">https://icons.getbootstrap.com/</a>" il y a un moteur de recherche ;-)</p>
+			<p class="info"> tu peux t'amuser à changer d'icone, regarde sur le site <a href="https://icons.getbootstrap.com/">https://icons.getbootstrap.com/</a>" il y a un moteur de recherche ;-)</p>
 
-			<h5>On ajoute un code stimulus qui va ajouter une ligne vide dans notre tableau au début</h5>
+			<h5>On ajoute un code stimulus qui va ajouter une ligne vide dans notre tableau juste en dessous de la ligne ou on clique. Pour cela on va créer un code qui va cloner notre ligne et vider les 3 premières collones</h5>
 			<p>On va créer un contrôleur Stimulus à partir de rien ce sera plus simple. Créé un fichier
 				<code>assets/controllers/produit_controller.js</code>
-				et ajoute le code suivant :
+				et ajoute le code suivant qui ne fait rien, il dit juste que le stimulus est bien chargé et qu'il est prêt à être utilisé :
+			</p>
 			</p>
 			<script type="text/plain" class="language-js">
 import { Controller } from '@hotwired/stimulus';
 export default class extends Controller {
-    connect() {
-
 	}
 }
 </script>
-			<p>Pour simplifier le tuto, on va entourer tout notre code du block body par un div </p>
+			<p>Pour chaque ligne dans notre index.html.twig on va ajouter le stimulus et une action pour le bouton + .</p>
+			<p>On dit que c'est sur cette ligne que notre stimulus va travailler.</p>
 			<script type="text/plain" class="language-twig">
 {% block body %}
-<div data-controller="produit">
-	<!-- Le reste de ton code -->
-</div>
+<tr data-controller="produit">
 {% endblock %}
 			</script>
-			<p class="info">Si on va sur la page web et que l'on fait click droit et inspecter on a Console en haut et quand on clique dessus on peut voir ce qui se passe en js et dans nos stimulus. Tu devrais voir <code>produit #initialize</code> et <code>produit #connect</code></p>
-
+			<p>et après le form on ajoute une action qui va lancer une fonctio ndans notre stimulus. Pour cela on met data-action et comme valeur le nom du stimulus et le nom de la function</p>
+			<script type="text/plain" class="language-twig">
+			<button data-action="produit#add" class="btn btn-primary">
+							<i class="bi bi-plus-circle-fill"></i>
+						</button>
+				</script>
+			<p class="info">Si on va sur la page web et que l'on fait click droit et inspecter on a Console en haut et quand on clique dessus on peut voir ce qui se passe en js et dans nos stimulus. Tu devrais voir pleins de <code>produit #initialize</code> et <code>produit #connect</code> (autant que le nombre de lignes ;-) )</p>
 
 			<p>On créé un code pour notre stimulus le plus simple possible, on le met entre les {}</p>
 			<script type="text/plain" class="language-js">
-				const addLineButton = document.getElementById('addline');
-addLineButton.addEventListener('click', () => {
-	const newRow = document.createElement('tr');
-	newRow.innerHTML = `
-		<td></td>
-		<td></td>
-		<td></td>
-		<td></td>
-	`;
-	document.querySelector('tbody').prepend(newRow);
-});
+				 add() {
+        const newline = this.element.cloneNode(true);
+        newline.children[0].textContent = '';
+        newline.children[1].textContent = '';
+        newline.children[2].textContent = '';
+        this.element.after(newline);
+    }
 </script>
-			<p class="info">En gros ce code,créé une variable <code>addLineButton</code> qui contient le bouton +, puis on lui ajoute un écouteur d'événement qui va créer une nouvelle ligne vide que l'on créé par document.createElement au début du tableau.</p>
+			<p class="info">On donne le nom de la fonction add() et on met le code entre les {}, le code dit que l'on créé une ligne que l'on apelle newline qui est un clone de la ligne acteulle (this.element) et que l'on vide le contenu de ses 3 enfants qui sont les td, enfin on ajoute après la ligne (this.element) la nouvelle ligne (newline).</p>
 			<p class="success">On a maintenant un bouton qui ajoute une ligne vide au début du tableau.</p>
+			<h5>On ajoute un bouton qui sauvegarde notre ligne</h5>
+			<p>On va ajouter un bouton qui va sauvegarder la ligne dans la base de données, on va créer un formulaire pour cela. On ajoute un formulaire dans notre index.html.twig juste après le bouton +</p>
+			<script type="text/plain" class="language-twig">
+				<button class="btn btn-success" data-action="produit#save">
+					<i class="bi bi-save"></i>
+				</button>
+			</script>
+			<p class="info">Si tu regerdes ce que cela donne, tu verras que les boutons sont les uns sous les autres, on arranger ça, dans leurs case on met <code>td class="d-flex p-0"</code> à la place de <code>td</code></p>
+			<h5>On va créer une méthode save dans notre stimulus</h5>
+			<p>On va ajouter une méthode save dans notre stimulus pour sauvegarder la ligne dans la base de données. On va utiliser fetch pour envoyer les données au serveur (à notre Controller HomeController).</p>
+			<p>On va ajouter le code suivant dans notre stimulus :</p>
+			<script type="text/plain" class="language-js">
+ save() {
+        fetch('/save', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+           body: JSON.stringify({ id: this.element.children[0].textContent, nom: this.element.children[1].textContent, prix: this.element.children[2].textContent }),
+        }).then(location.reload());
+    }
+</script>
+			<p class="info">On utilise fetch pour envoyer une requête POST à notre l'url <code>save</code>, on envoie les éléments de la ligne (id, nom, prix) en JSON. On peut maintenant créer la route dans notre Controller HomeController. La ligne <code>location.reload()</code> va actualiser la page web quand il a finis l'envoie et qu'il a reçu un retour.</p>
+			<h5>On ajoute la route dans notre Controller HomeController :</h5>
+			<pre><code class="language-php">#[Route('/save', name: 'save_produit', methods: ['POST'])]
+public function save(ProduitRepository $produitRepository, ObjectManager $em, FlasherInterface $flasher, Request $request): Response
+    {
+        $data = json_decode($request->getContent(), true);
+        $produit = new Produit();
+        $produit->setNom($data['nom']);
+        $produit->setPrix($data['prix']);
+        $em->persist($produit);
+        $em->flush();
+
+        $flasher->success('Produit sauvegardé avec succès !');
+
+        return new Response('Produit sauvegardé', 200);
+    }</code></pre>
+			<p class="info">On récupère les données envoyées par le stimulus, on crée un nouvel objet Produit, on lui donne un nom et un prix, on le persiste et on le sauvegarde dans la base de données. On utilise aussi Flasher pour afficher un message de succès.</p>
+			<p class="warning">On a un problème on ne peut pas modifier la case prix ou nom des ligne. Il suffit d'ajouter <code>contenteditable="true" dans les deux tds d'index.html.twig</code></p>
+			<p class="warning">Si on modifie une ligne existante, on voit qu'il laisse l'ancienne et qu'il ajoute une nouvelle ligne. Le problème vient du Controller, il faut vérifier si id est nulle, s'il est null, on est dans une création d'une nouvelle ligne, sinon on est dans une modification d'une ligne existante. </p>
+			<p>On va modifier notre Controller HomeController :</p>
+			<pre><code class="language-php">        if($data['id'] != "") {
+            $produit = $em->getRepository(Produit::class)->find($data['id']);
+        }
+        else {
+            $produit = new Produit();
+        }</code></pre> à la place de <code>$produit = new Produit();</code>
+
+
+
+
 		</div>
+
+
+
+
+
+
+
 	</body>
 
 </html>

@@ -4,35 +4,36 @@
 {% endblock %}
 
 {% block body %}
-	<div data-controller="produit">
-		<button class="btn btn-success" id="addline">
-			<i class="bi bi-plus-circle-fill me-2"></i>
-			Ajouter un produit
-		</button>
-
-		<table class="table table-striped">
-			<thead class="table-dark">
-				<tr>
-					<th>id</th>
-					<th>Nom</th>
-					<th>Prix</th>
-					<th>Action</th>
+	<table class="table table-striped">
+		<thead class="table-dark">
+			<tr>
+				<th>id</th>
+				<th>Nom</th>
+				<th>Prix</th>
+				<th>Action</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for produit in produits %}
+				<tr data-controller="produit">
+					<td>{{ produit.id }}</td>
+					<td contenteditable="true">{{ produit.nom }}</td>
+					<td contenteditable="true">{{ produit.prix }}</td>
+					<td class="d-flex p-0">
+						<form method="post" action="{{ path('delete_produit', {id: produit.id}) }}">
+							<button type="submit" class="btn btn-danger">
+								<i class="bi bi-trash"></i>
+							</button>
+						</form>
+						<button data-action="click->produit#add" class="btn btn-primary">
+							<i class="bi bi-plus-circle-fill"></i>
+						</button>
+						<button class="btn btn-success" data-action="produit#save">
+							<i class="bi bi-save"></i>
+						</button>
+					</td>
 				</tr>
-			</thead>
-			<tbody data-add-product-target="tableBody">
-				{% for produit in produits %}
-					<tr>
-						<td>{{ produit.id }}</td>
-						<td>{{ produit.nom }}</td>
-						<td>{{ produit.prix }}</td>
-						<td>
-							<form method="post" action="{{ path('delete_produit', {id: produit.id}) }}">
-								<button type="submit" class="btn btn-danger">Supprimer</button>
-							</form>
-						</td>
-					</tr>
-				{% endfor %}
-			</tbody>
-		</table>
-	</div>
+			{% endfor %}
+		</tbody>
+	</table>
 {% endblock %}
