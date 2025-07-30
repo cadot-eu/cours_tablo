@@ -1,2 +1,2 @@
-project-tablo
-docker-compose.yml
+project-tablo/
+.env.local
